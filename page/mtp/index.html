@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" content="text/html; charset=UTF-8">
+  <link rel="shortcut icon" href="https://github.githubassets.com/favicons/favicon.svg">
+  <title>视频转图片</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 100%;
+      padding: 20px;
+      text-align: center;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      margin: 10px;
+    }
+
+    #videoInput, #intervalSecondsInput, #convertButton {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #imageContainer {
+      margin-top: 20px;
+    }
+
+    .image {
+      max-width: 100%;
+      height: auto;
+      margin: 10px auto;
+      display: block;
+    }
+
+    .buttonContainer {
+      text-align: center;
+    }
+
+    #downloadButton {
+      margin-top: 20px;
+    }
+
+    .buttonCenter {
+      margin-top: 20px;
+    }
+
+    #downloadAllButton {
+      display: none;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>视频转图片</h1>
+    <input type="file" id="videoInput" accept="video/mp4">
+    <input type="number" id="intervalSecondsInput" placeholder="请输入间隔秒数">
+    <button id="convertButton">视频转图片</button>
+    <div id="imageContainer"></div>
+    <div class="buttonCenter">
+      <button id="downloadAllButton">下载图片（浏览器限制十张以内批量下载）</button>
+    </div>
+  </div>
+
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var fileInput = document.getElementById('videoInput');
+      var intervalSecondsInput = document.getElementById('intervalSecondsInput');
+      var imageContainer = document.getElementById('imageContainer');
+      var downloadAllButton = document.getElementById('downloadAllButton');
+
+      var video;
+      var images = [];
+
+      fileInput.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        var objectURL = URL.createObjectURL(file);
+
+        video = document.createElement('video');
+        video.src = objectURL;
+        video.preload = 'metadata';
+
+        video.onloadedmetadata = function() {
+          imageContainer.innerHTML = '';
+          downloadAllButton.style.display = 'none';
+        };
+
+        video.load();
+      });
+
+      function convertToImage() {
+        if (!video) {
+          imageContainer.innerHTML = '请先选择一个视频文件';
+          return;
+        }
+
+        var intervalSeconds = parseInt(intervalSecondsInput.value, 10);
+        if (isNaN(intervalSeconds) || intervalSeconds <= 0 || intervalSeconds > video.duration) {
+          imageContainer.innerHTML = '无效的间隔秒数';
+          return;
+        }
+
+        images = [];
+        var currentTime = 0;
+
+        function captureFrame() {
+          if (currentTime >= video.duration) {
+            displayImages();
+            return;
+          }
+
+          video.currentTime = currentTime;
+          video.onseeked = function() {
+            var canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            var imageUrl = canvas.toDataURL();
+            images.push({ url: imageUrl, time: currentTime });
+            currentTime += intervalSeconds;
+            captureFrame();
+          };
+        }
+
+        captureFrame();
+        imageContainer.innerHTML = '正在处理，请稍候...';
+      }
+
+      function displayImages() {
+        imageContainer.innerHTML = '';
+
+        for (var i = 0; i < images.length; i++) {
+          var imageElement = document.createElement('img');
+          imageElement.src = images[i].url;
+          imageElement.classList.add('image');
+          
+          imageElement.addEventListener('click', function(url) {
+            return function() {
+              var newWindow = window.open('', '_blank');
+              newWindow.document.write('<img src="' + url + '">');
+            }
+          }(images[i].url));
+          
+          imageContainer.appendChild(imageElement);
+        }
+
+        downloadAllButton.style.display = 'block';
+        downloadAllButton.addEventListener('click', function() {
+          var counter = 0;
+
+          for (var i = 0; i < images.length; i++) {
+            var link = document.createElement('a');
+            var timeString = secondsToTimeString(images[i].time);
+            link.download = getFileNameWithoutExtension(fileInput.files[0].name) + '_' + timeString + '.png';
+            link.href = images[i].url;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+
+            link.onload = function() {
+              counter++;
+
+              if (counter === images.length) {
+                document.body.removeChild(link);
+              }
+            };
+          }
+        });
+      }
+
+      function getFileNameWithoutExtension(fileName) {
+        return fileName.split('.').slice(0, -1).join('.');
+      }
+
+      function secondsToTimeString(seconds) {
+        var hours = Math.floor(seconds / 3600);
+        var minutes = Math.floor((seconds % 3600) / 60);
+        var remainingSeconds = Math.floor(seconds % 60);
+
+        return padZero(hours) + '_' + padZero(minutes) + '_' + padZero(remainingSeconds);
+      }
+
+      function padZero(number) {
+        return (number < 10 ? '0' : '') + number;
+      }
+
+      var convertButton = document.getElementById('convertButton');
+      convertButton.addEventListener('click', convertToImage);
+    });
+  </script>
+</body>
+</html>

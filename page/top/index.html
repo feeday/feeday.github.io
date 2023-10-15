@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>硬件算力排行榜</title>
+    <link rel="shortcut icon" href="https://github.githubassets.com/favicons/favicon.svg">
+<head>
+  <style>
+   table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+th {
+  cursor: pointer;
+}
+
+th:hover {
+  background-color: #f5f5f5;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+  </style>
+  <script>
+    // 默认排序函数
+    function sortDefault() {
+      sortTable(4); // 按照 TFLOPs 列排序
+    }
+
+    // 排序函数
+    function sortTable(n) {
+      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+      table = document.getElementById("myTable");
+      switching = true;
+      dir = "asc";
+      while (switching) {
+        switching = false;
+        rows = table.getElementsByTagName("TR");
+        for (i = 1; i < (rows.length - 1); i++) {
+          shouldSwitch = false;
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          if (dir == "asc") {
+            if (n === 5) { // 日期列
+              if (new Date(x.innerHTML) > new Date(y.innerHTML)) {
+                shouldSwitch = true;
+                break;
+              }
+            } else { // 数字列
+              if (Number(x.innerHTML) > Number(y.innerHTML)) {
+                shouldSwitch = true;
+                break;
+              }
+            }
+          } else if (dir == "desc") {
+            if (n === 5) { // 日期列
+              if (new Date(x.innerHTML) < new Date(y.innerHTML)) {
+                shouldSwitch = true;
+                break;
+              }
+            } else { // 数字列
+              if (Number(x.innerHTML) < Number(y.innerHTML)) {
+                shouldSwitch = true;
+                break;
+              }
+            }
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          switchcount++;
+        } else {
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body onload="sortDefault()">
+  <table id="myTable">
+    <tr>
+      <th onclick="sortTable(0)">Hardware Type</th>
+      <th onclick="sortTable(1)">VRAM-GB</th>
+      <th onclick="sortTable(2)">VRAM-GB/s</th>
+      <th onclick="sortTable(3)">TDP-W</th>
+      <th onclick="sortTable(4)">TFLOPs</th>
+      <th onclick="sortTable(5)">Update</th>
+    </tr>
+    <tr>
+      <td><a target="_blank" href="https://www.topcpu.net/cpu/a100-pcie-80-gb">NVIDIA A100 PCIe-80GB</a></td> 
+      <td>80</td>
+      <td>2039</td>
+      <td>250</td>
+      <td>19.49</td>
+      <td>2021-06</td>
+    </tr>
+    <tr>
+      <td><a target="_blank" href="https://www.topcpu.net/cpu/geforce-rtx-3060-mobile">GeForce RTX 3060 Mobile-6GB-GDDR6</a></td> 
+      <td>6</td>
+      <td>336</td>
+      <td>80</td>
+      <td>10.94</td>
+      <td>2021-01</td>
+    </tr>
+    <tr>
+      <td><a target="_blank" href="https://www.topcpu.net/cpu/geforce-rtx-4090-ti">GeForce RTX 4090 Ti-24G-GDDR6X</a></td> 
+      <td>24</td>
+      <td>1152</td>
+      <td>600</td>
+      <td>95.42</td>
+      <td>2023-01</td>
+    </tr>
+  </table>
+</body>
+</html>
