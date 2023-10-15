@@ -87,6 +87,179 @@ h1 {
 	  
     }
 </style>
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <style>
+    div {
+}
+    /* 搜索功能样式 */
+    .search-container {
+      margin-top: 20px;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      outline: none;
+      font-size: 16px;
+      width: 680px;
+    }
+
+    button {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    select {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      outline: none;
+      font-size: 16px;
+      background-color: #fff;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+    }
+
+    select:hover {
+      border-color: #999;
+    }
+
+    select:focus {
+      border-color: #555;
+    }
+
+    select::after {
+      content: "\25BC";
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      color: #555;
+      pointer-events: none;
+    }
+
+    /* 语音输入样式 */
+    #inputField {
+      width: 300px;
+      height: 40px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 10px;
+      font-size: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f1f1f1;
+      color: #333;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #ccc;
+      color: #fff;
+    }
+
+    .button:disabled {
+      background-color: #e0e0e0;
+      color: #999;
+      cursor: not-allowed;
+    }
+  </style>
+  <script>
+    function search() {
+      var searchInput = document.getElementById("searchInput");
+      var searchEngine = document.getElementById("searchEngine").value;
+      var query = encodeURIComponent(searchInput.value);
+      var url = searchEngine + query; // 构建完整的搜索链接
+      window.open(url, "_blank"); // 在新页面打开搜索结果
+    }
+
+    // 创建语音识别对象和按钮元素的引用
+    const recognition = new webkitSpeechRecognition();
+    const startButton = document.getElementById('startButton');
+    const stopButton = document.getElementById('stopButton');
+
+    // 设置语言为中文（中国）
+    recognition.lang = 'zh-CN';
+
+    // 当识别到语音时的回调函数
+    recognition.onresult = function(event) {
+      // 获取识别结果
+      const transcript = event.results[0][0].transcript;
+
+      // 将识别结果填充到输入框
+      document.getElementById('searchInput').value = transcript;
+    }
+
+    // 实时更新语音输入
+    recognition.onaudiostart = function(event) {
+      setInterval(function() {
+        const interimTranscript = recognition.interimResults[recognition.interimResults.length - 1][0].transcript;
+        document.getElementById('searchInput').value = interimTranscript;
+      }, 200);
+    }
+
+    // 开始语音识别
+function startSpeechRecognition() {
+  recognition.start();
+
+  // 禁用开始按钮，启用停止按钮
+  startButton.disabled = true;
+  stopButton.disabled = false;
+
+  // 设置10秒后停止语音识别
+  setTimeout(stopSpeechRecognition, 10000); // 10秒
+}
+
+// 停止语音识别
+function stopSpeechRecognition() {
+  recognition.stop();
+
+  // 启用开始按钮，禁用停止按钮
+  startButton.disabled = false;
+  stopButton.disabled = true;
+}
+  </script>
+</head>
+<body>
+  <div class="search-container">
+    <select id="searchEngine">
+      <option value="https://www.google.com/search?q=">谷歌搜索</option>
+      <option value="https://search.bilibili.com/all?keyword=">哔站视频</option>
+      <option value="https://www.douyin.com/search/">国内抖音</option>
+      <option value="https://pic.sogou.com/pics?query=">搜狗图片</option>
+      <option value="https://s.weibo.com/weibo?q=">微博博文</option>
+      <option value="https://tieba.baidu.com/f/search/res?ie=utf-8&amp;qw=">贴吧帖子</option>
+      <option value="https://github.com/0xf177/0xf177.github.io/issues?q=" selected>问题笔记</option>
+    </select>
+    <input type="text" id="searchInput" placeholder="搜索我的笔记和问题" onfocus="if (document.getElementById('searchEngine').value === 'https://github.com/0xf177/0xf177.github.io/issues?q=') this.placeholder = '搜索我的笔记和问题'; else this.placeholder = '';">
+
+    <button id="startButton" class="button" onclick="startSpeechRecognition()">语音输入</button>
+    <button id="stopButton" class="button" onclick="stopSpeechRecognition()">停止输入</button>
+    <button class="button" onclick="document.getElementById(&#39;searchInput&#39;).value = &#39;&#39;;">清空内容</button>
+    <button class="button" onclick="search()">搜索跳转</button>
+  </div>
+</body></html>
 </head>
 <body>
 <textarea id="textarea" placeholder="常用正则表达式：
