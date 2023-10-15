@@ -1,3 +1,296 @@
-<script language="javascript" type="text/javascript">
-window.location.href='https://puck.chat/page/';
+	 <script language="javascript" type="text/javascript">
+function goPAGE() {
+	if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+		window.location.href="./m/";   // 移动端跳转地址
+}
+}
+goPAGE();
 </script>
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <title>文本处理器</title>
+      <link rel="shortcut icon" href="https://github.githubassets.com/favicons/favicon.svg">
+<style>
+body {
+font-family: Arial, sans-serif;
+width: 98%;
+margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#textarea {
+  width: 98%;
+  height: 380px;
+  margin-top: 20px;
+  font-size: 16px;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+}
+
+#stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-size: 10px;
+  padding: 10px;
+  background-color: #eee;
+  border-radius: 5px;
+}
+
+#stats div {
+  margin-right: 20px;
+}
+
+#stats div:last-child {
+  margin-right: 0;
+}
+
+#stats div span {
+  font-weight: bold;
+  font-size: 24px;
+  display: block;
+  margin-top: 5px;
+}
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .input-group input {
+      margin-right: 10px;
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .input-group button {
+      font-size: 12px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      background-color: #28a745;
+      margin-right: 10px; /* 添加按钮之间的右边距 */
+    }
+
+    .input-group button:active {
+      background-color: #2C6F33;
+	  
+    }
+</style>
+</head>
+<body>
+<textarea id="textarea" placeholder="常用正则表达式：
+数字：[0-9]*
+n位的数字：\d{n}
+至少n位的数字：\d{n,}
+匹配多行文本中每行的最后的两个字符:.{2}(?=\n|$)
+匹配多行文本中每行的开始的两个字符:(?&lt;=^|\n).{2}
+中文字符的正则表达式：[\u4e00-\u9fa5]
+英文和数字：[A-Za-z0-9]+ 或 [A-Za-z0-9]{4,40}
+长度为3-20的所有字符：.{3,20}
+由26个英文字母组成的字符串：[A-Za-z]+
+由26个大写英文字母组成的字符串：[A-Z]+
+由26个小写英文字母组成的字符串：[a-z]+
+由数字和26个英文字母组成的字符串：[A-Za-z0-9]+
+由数字、26个英文字母或者下划线组成的字符串：\w+ 或 \w{3,20}
+由纯网址组成的字符串：https?:\/\/[^\s/$.?#].[^\s]*"></textarea>
+
+<div class="input-group">
+<input id="search-input" style="width: 30%;" placeholder="输入要查找的文本">
+<input id="replace-input" style="width: 30%;" placeholder="输入要替换的文本">
+<input type="text" class="form-control mx-3" id="api_key" name="api_key" style="width: 39%;" placeholder="输入要密钥">
+</div>
+<div class="input-group">
+<button class="button" id="remove-duplicates-btn" style="background-color: #007bff; color: white;">去重</button>
+<button class="button" id="replace-btn" style="background-color: #007bff; color: white;">替换</button>
+<button class="button" id="regex-replace-btn" style="background-color: #A52A2A; color: white;">正则</button>
+<button class="button" id="copy-btn" style="background-color: #FFA500; color: white;">复制</button>
+<button class="button" id="paste-btn" style="background-color: #FF4500; color: white;">粘贴</button>
+<button class="button" id="clear-btn" style="background-color: red; color: white;">清空</button>
+<button type="button" class="btn btn-primary" style="background-color: purple; color: white;" onclick="testAPI()">测试</button>
+<a href="https://c.binjie.fun/" target="_blank"><button class="button">智能提问</button></a>
+<a href="https://chat.openai.com/" target="_blank"><button class="button">高级提问</button></a>
+<a href="https://openkey.cloud/chat" target="_blank"><button class="button">测试密钥</button></a>
+<a href="https://platform.openai.com/account/api-keys" target="_blank"><button class="button">国外密钥</button></a>
+<a href="https://openkey.cloud/token" target="_blank"><button class="button">国内密钥</button></a>
+<a href="https://huggingface.co/models" target="_blank"><button class="button">抱脸模型</button></a>
+<a href="https://replicate.com/explore" target="_blank"><button class="button">直角模型</button></a>
+</div>
+<div id="stats">
+<div id="total">总数：0</div>
+<div id="chinese">汉字：0</div>
+<div id="punctuation">标点：0</div>
+<div id="alphabet">字母：0</div>
+<div id="numbers">数字：0</div>
+<div id="duplicate">重复：0</div>
+<div id="replace-count">替换：0</div>
+<div id="regex-replace-count">正则：0</div>
+</div>
+<script>
+const textarea = document.getElementById("textarea");
+const searchInput = document.getElementById("search-input");
+const replaceInput = document.getElementById("replace-input");
+const replaceBtn = document.getElementById("replace-btn");
+const regexReplaceBtn = document.getElementById("regex-replace-btn");
+const clearBtn = document.getElementById("clear-btn");
+const removeDuplicatesBtn = document.getElementById("remove-duplicates-btn");
+const totalEl = document.getElementById("total");
+const chineseEl = document.getElementById("chinese");
+const punctuationEl = document.getElementById("punctuation");
+const alphabetEl = document.getElementById("alphabet");
+const numbersEl = document.getElementById("numbers");
+const duplicateEl = document.getElementById("duplicate");
+
+const textarea2 = document.getElementById("textarea");
+const copyBtn = document.getElementById("copy-btn");
+
+textarea.addEventListener("input", updateStats);
+clearBtn.addEventListener("click", clearTextarea);
+removeDuplicatesBtn.addEventListener("click", removeDuplicates);
+replaceBtn.addEventListener("click", replaceText);
+regexReplaceBtn.addEventListener("click", replaceTextUsingRegex);
+
+function updateStats() {
+  const text = textarea.value;
+  const total = text.length;
+  const chinese = text.match(/[\u4e00-\u9fa5]/g)?.length || 0;
+  const punctuation = text.match(/[^\u4e00-\u9fa5\w]/g)?.length || 0;
+  const alphabet = text.match(/[a-zA-Z]/g)?.length || 0;
+  const numbers = text.match(/\d/g)?.length || 0;
+
+  totalEl.textContent = `总数：${total}`;
+  chineseEl.textContent = `汉字：${chinese}`;
+  punctuationEl.textContent = `标点：${punctuation}`;
+  alphabetEl.textContent = `字母：${alphabet}`;
+  numbersEl.textContent = `数字：${numbers}`;
+}
+
+function clearTextarea() {
+  textarea.value = "";
+  updateStats();
+}
+
+// 去重处理
+function removeDuplicates() {
+  const text = textarea.value;
+  const textList = text.split("\n"); // 假设文本项以换行符分隔
+  
+  const uniqueList = [...new Set(textList)];
+  const duplicateCount = textList.length - uniqueList.length;
+  duplicateEl.textContent = `重复：${duplicateCount}`;
+  
+  textarea.value = uniqueList.join("\n"); // 更新文本框内容
+  updateStats(); // 更新统计信息
+}
+
+function replaceText() {
+    const searchValue = searchInput.value;
+    const replaceValue = replaceInput.value;
+    const text = textarea.value;
+
+    if (searchValue !== "") {
+        const matches = text.match(new RegExp(searchValue, 'g'));
+        const replaceCount = matches ? matches.length : 0; // 计算匹配项的次数
+
+        const newText = text.replaceAll(searchValue, replaceValue);
+        document.getElementById("replace-count").textContent = `替换：${replaceCount}`;
+        textarea.value = newText;
+        updateStats();
+    }
+}
+
+        function replaceTextUsingRegex() {
+            const searchValue = searchInput.value;
+            const replaceValue = replaceInput.value;
+            const text = textarea.value;
+
+            if (searchValue !== "") {
+                let newText;
+                let matchCount = (text.match(new RegExp(searchValue, 'g')) || []).length;
+                try {
+                    newText = text.replace(new RegExp(searchValue, 'g'), replaceValue);
+                } catch (e) {
+                    alert("正则表达式有误: " + e.message);
+                    return;
+                }
+                document.getElementById("regex-replace-count").textContent = `正则：${matchCount}`;
+                textarea.value = newText;
+                updateStats();
+            }
+        }
+
+    function testAPI() {
+        const originalInput = document.getElementById('textarea').value;  // 先保存原始输入
+        document.getElementById('textarea').value = "请稍后...";
+        
+        const apiKey = document.getElementById("api_key").value.trim();
+
+        let apiUrl = "https://api.openai.com/v1/chat/completions";
+        const data = {
+            model: "gpt-3.5-turbo",
+            messages: [{role: "system", content: "You are a helpful assistant."}, {role: "user", content: originalInput}]  // 使用原始输入
+        };
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", apiUrl, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Authorization", `Bearer ${apiKey}`);
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE) {
+              if (this.status === 200) {
+    const response = JSON.parse(this.responseText);
+    document.getElementById('textarea').value = response.choices[0].message.content;
+    updateStats();  // 在这里更新统计信息
+} else {
+    document.getElementById('textarea').value = "请求失败，请检查您的API密钥和其他设置。";
+}
+            }
+        };
+
+        xhr.send(JSON.stringify(data));
+    }
+	copyBtn.addEventListener("click", function() {
+    let textToCopy;
+    if (textarea.value === "") {
+        // 按行分割占位符，然后用换行符连接
+        textToCopy = textarea2.getAttribute("placeholder").split("*").join("*\n");
+    } else {
+        textToCopy = textarea2.value;
+    }
+    
+    const tempInput = document.createElement("textarea"); // 使用文本区域代替输入来支持多行
+    document.body.appendChild(tempInput);
+    tempInput.value = textToCopy;
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+    //alert("文本已复制到剪贴板!");
+});
+const pasteBtn = document.getElementById("paste-btn");
+
+pasteBtn.addEventListener("click", function() {
+    navigator.clipboard.readText()
+    .then(clipText => {
+        textarea.value = clipText;
+        updateStats();
+        //alert("文本已从剪贴板粘贴!");
+    }).catch(err => {
+        //alert('粘贴失败：' + err);
+    });
+});
+
+</script>
+<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"JRHGRBPWC7lJIaXq",ck:"JRHGRBPWC7lJIaXq"})</script>
+</body></html>
