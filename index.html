@@ -292,12 +292,12 @@ n位的数字：\d{n}
 <button class="button" id="copy-btn" style="background-color: #FFA500; color: white;">复制</button>
 <button class="button" id="paste-btn" style="background-color: #FF4500; color: white;">粘贴</button>
 <button class="button" id="clear-btn" style="background-color: red; color: white;">清空</button>
-<button type="button" class="btn btn-primary" style="background-color: purple; color: white;" onclick="testAPI()">测试密钥</button>
-<a href="https://c.binjie.fun/" ><button class="button">智能提问</button></a>
-<a href="https://chat.openai.com/" target="_blank"><button class="button">高级提问</button></a>
+<button class="button" style="background-color: purple; color: white;"  id="openai-btn" data-api-url="https://api.openai.com/v1/chat/completions">官方密钥</button>
+<button class="button" style="background-color: purple; color: white;"  id="openkey-btn" data-api-url="https://openkey.cloud/v1/chat/completions">国内密钥</button>
 <a href="https://platform.openai.com/account/api-keys" target="_blank"><button class="button">官方密钥</button></a>
 <a href="https://openkey.cloud/token" target="_blank"><button class="button">国内密钥</button></a>
-<a href="https://huggingface.co/models" target="_blank"><button class="button">抱脸模型</button></a>
+<a href="https://c.binjie.fun/"><button class="button">智能提问</button></a>
+<a href="https://chat.openai.com/" target="_blank"><button class="button">高级提问</button></a>
 <a href="https://replicate.com/explore" target="_blank"><button class="button">直角模型</button></a>
 </div>
 <div id="stats">
@@ -403,37 +403,55 @@ function replaceText() {
             }
         }
 
-    function testAPI() {
-        const originalInput = document.getElementById('textarea').value;  // 先保存原始输入
-        document.getElementById('textarea').value = "请稍后...";
-        
-        const apiKey = document.getElementById("api_key").value.trim();
+let apiUrl = ""; // 初始化为空
 
-        let apiUrl = "https://api.openai.com/v1/chat/completions"; //  国内代理：https://openkey.cloud/v1/chat/completions
-        const data = {
-            model: "gpt-3.5-turbo",
-            messages: [{role: "system", content: "You are a helpful assistant."}, {role: "user", content: originalInput}]  // 使用原始输入
-        };
+document.getElementById("openai-btn").addEventListener("click", function() {
+    apiUrl = this.getAttribute("data-api-url");
+    testAPI(); // 调用API测试函数
+});
 
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", apiUrl, true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.setRequestHeader("Authorization", `Bearer ${apiKey}`);
+document.getElementById("openkey-btn").addEventListener("click", function() {
+    apiUrl = this.getAttribute("data-api-url");
+    testAPI(); // 调用API测试函数
+});
 
-        xhr.onreadystatechange = function () {
-            if (this.readyState === XMLHttpRequest.DONE) {
-              if (this.status === 200) {
-    const response = JSON.parse(this.responseText);
-    document.getElementById('textarea').value = response.choices[0].message.content;
-    updateStats();  // 在这里更新统计信息
-} else {
-    document.getElementById('textarea').value = "请求失败，请检查您的API密钥和其他设置。";
-}
-            }
-        };
-
-        xhr.send(JSON.stringify(data));
+function testAPI() {
+    if (!apiUrl) {
+        alert("请选择一个API URL");
+        return;
     }
+
+    const originalInput = document.getElementById('textarea').value;
+    document.getElementById('textarea').value = "请稍后...";
+    const apiKey = document.getElementById("api_key").value.trim();
+
+    const data = {
+        model: "gpt-3.5-turbo",
+        messages: [
+            { role: "system", content: "You are a helpful assistant." },
+            { role: "user", content: originalInput }
+        ]
+    };
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", apiUrl, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Authorization", `Bearer ${apiKey}`);
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            if (this.status === 200) {
+                const response = JSON.parse(this.responseText);
+                document.getElementById('textarea').value = response.choices[0].message.content;
+                updateStats(); // 更新统计信息
+            } else {
+                document.getElementById('textarea').value = "请求失败，请检查您的API密钥和其他设置。";
+            }
+        }
+    };
+
+    xhr.send(JSON.stringify(data));
+}	
 	copyBtn.addEventListener("click", function() {
     let textToCopy;
     if (textarea.value === "") {
