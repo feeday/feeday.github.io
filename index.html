@@ -409,7 +409,7 @@ function replaceText() {
         
         const apiKey = document.getElementById("api_key").value.trim();
 
-        let apiUrl = "https://api.openai.com/v1/chat/completions";
+        let apiUrl = "https://api.openai.com/v1/chat/completions"; //  国内代理：https://openkey.cloud/v1/chat/completions
         const data = {
             model: "gpt-3.5-turbo",
             messages: [{role: "system", content: "You are a helpful assistant."}, {role: "user", content: originalInput}]  // 使用原始输入
