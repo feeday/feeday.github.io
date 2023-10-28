@@ -254,12 +254,13 @@ function stopSpeechRecognition() {
       <option value="https://github.com/feeday/feeday.github.io/issues?q=" selected>代码笔记</option>
     </select>
     <input type="text" id="searchInput" placeholder="搜索我的笔记和问题" onfocus="if (document.getElementById('searchEngine').value === 'https://github.com/0xf177/0xf177.github.io/issues?q=') this.placeholder = '搜索我的笔记和问题'; else this.placeholder = '';">
-
+    <button class="button" onclick="search()">搜索</button>
+    <button class="button" onclick="document.getElementById(&#39;searchInput&#39;).value = &#39;&#39;;">清空</button>
+    <a href="https://github.com/feeday/feeday.github.io/issues"  target="_blank" ><button class="button">笔记</button></a>
     <button id="startButton" class="button" onclick="startSpeechRecognition()">语音输入</button>
     <button id="stopButton" class="button" onclick="stopSpeechRecognition()">停止输入</button>
-    <button class="button" onclick="document.getElementById(&#39;searchInput&#39;).value = &#39;&#39;;">清空</button>
-    <button class="button" onclick="search()">搜索</button>
-    <a href="https://github.com/feeday/feeday.github.io/issues"  target="_blank" ><button class="button">笔记</button></a>
+
+
   </div>
 </body></html>
 </head>
