@@ -258,7 +258,9 @@ function stopSpeechRecognition() {
     <button id="stopButton" class="button" onclick="stopSpeechRecognition()">停止输入</button>
   </div>
 
-<textarea id="textarea" placeholder="常用正则表达式：
+<textarea id="textarea" placeholder="服务器一键配置脚本
+curl https://puck.chat/sh/puck.sh -O  bash puck.sh
+常用正则表达式：
 数字：[0-9]*
 n位的数字：\d{n}
 至少n位的数字：\d{n,}
@@ -267,13 +269,9 @@ n位的数字：\d{n}
 中文字符的正则表达式：[\u4e00-\u9fa5]
 英文和数字：[A-Za-z0-9]+ 或 [A-Za-z0-9]{4,40}
 长度为3-20的所有字符：.{3,20}
-由26个英文字母组成的字符串：[A-Za-z]+
-由26个大写英文字母组成的字符串：[A-Z]+
-由26个小写英文字母组成的字符串：[a-z]+
 由数字和26个英文字母组成的字符串：[A-Za-z0-9]+
 由数字、26个英文字母或者下划线组成的字符串：\w+ 或 \w{3,20}
 由纯网址组成的字符串：https?:\/\/[^\s/$.?#].[^\s]*"></textarea>
-
 <div class="input-group">
 <input id="search-input" style="width: 25%;" placeholder="输入要查找的文本">
 <input id="replace-input" style="width: 25%;" placeholder="输入要替换的文本">
