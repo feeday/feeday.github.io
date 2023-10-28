@@ -284,6 +284,7 @@ n位的数字：\d{n}
 <button class="button" id="copy-btn" style="background-color: #FFA500; color: white;">复制</button>
 <button class="button" id="paste-btn" style="background-color: #FF4500; color: white;">粘贴</button>
 <button class="button" id="clear-btn" style="background-color: red; color: white;">清空</button>
+<button onclick="formatAndPreview()"  style="background-color: #511a1a; color: white;">网页</button>
 <button class="button" style="background-color: purple; color: white;"  id="openai-btn" data-api-url="https://api.openai.com/v1/chat/completions">官方密钥</button>
 <button class="button" style="background-color: purple; color: white;"  id="openkey-btn" data-api-url="https://openkey.cloud/v1/chat/completions">国内密钥</button>
 <a href="https://platform.openai.com/account/api-keys" target="_blank"><button class="button">官方密钥</button></a>
@@ -473,7 +474,51 @@ pasteBtn.addEventListener("click", function() {
         //alert('粘贴失败：' + err);
     });
 });
+</script>
+<script>
+    function formatHTML(input) {
+        let formatted = '';
+        let pad = 0;
+        const tags = ['<p>', '</p>', '<div>', '</div>', '<span>', '</span>', '<br>', '<br/>']; // 这只是一个简化的标签列表，你可以添加更多的标签
 
+        input.split(/\r?\n/).forEach(line => {
+            let indent = 0;
+
+            tags.forEach(tag => {
+                if (line.includes(tag)) {
+                    if (tag.startsWith('</')) {
+                        pad -= 1;
+                    }
+                }
+            });
+
+            for (let i = 0; i < pad; i++) {
+                indent += 4;
+            }
+
+            formatted += ' '.repeat(indent) + line.trim() + '\n';
+
+            tags.forEach(tag => {
+                if (line.includes(tag)) {
+                    if (!tag.startsWith('</')) {
+                        pad += 1;
+                    }
+                }
+            });
+        });
+
+        return formatted;
+    }
+
+    function formatAndPreview() {
+        const code = document.getElementById('textarea').value;
+        const formattedCode = formatHTML(code);
+        document.getElementById('textarea').value = formattedCode;
+        
+        const newWindow = window.open("", "Preview Window", "width=600,height=600");
+        newWindow.document.write(code);
+        newWindow.document.close();
+    }
 </script>
 <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
 <script>LA.init({id:"JRHGRBPWC7lJIaXq",ck:"JRHGRBPWC7lJIaXq"})</script>
