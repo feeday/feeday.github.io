@@ -71,21 +71,13 @@
     <input type="file" id="videoInput" accept="video/mp4">
     <input type="number" id="intervalSecondsInput" placeholder="请输入间隔秒数">
     <button id="convertButton">视频转图片</button>
-<input type="text" id="searchInput" placeholder="搜索我的仓库代码" onfocus="if (document.getElementById('searchEngine').value === 'https://github.com/feeday/feeday.github.io/issues?q=') this.placeholder = '搜索我的仓库代码'; else this.placeholder = '';">
-   <button  class="button" onclick="search()">搜仓库代码</button>
+    <button  onclick="window.location.href='https://chat18.aichatos.xyz/'">提问小助手</button>
     <div id="imageContainer"></div>
     <div class="buttonCenter">
       <button id="downloadAllButton">下载图片（浏览器限制十张以内批量下载）</button>
     </div>
   </div>
-<script>
-    function search() {
-      var searchInput = document.getElementById("searchInput");
-      var searchEngine = document.getElementById("searchEngine").value;
-      var query = encodeURIComponent(searchInput.value);
-      var url = searchEngine + query; // 构建完整的搜索链接
-      window.open(url, "_blank"); // 在新页面打开搜索结果
-    } </script>
+
  <script>
     document.addEventListener('DOMContentLoaded', function() {
       var fileInput = document.getElementById('videoInput');
