@@ -78,7 +78,14 @@
       <button id="downloadAllButton">下载图片（浏览器限制十张以内批量下载）</button>
     </div>
   </div>
-
+<script>
+    function search() {
+      var searchInput = document.getElementById("searchInput");
+      var searchEngine = document.getElementById("searchEngine").value;
+      var query = encodeURIComponent(searchInput.value);
+      var url = searchEngine + query; // 构建完整的搜索链接
+      window.open(url, "_blank"); // 在新页面打开搜索结果
+    } </script>
  <script>
     document.addEventListener('DOMContentLoaded', function() {
       var fileInput = document.getElementById('videoInput');
