@@ -18,6 +18,15 @@
   <meta content="black" name="apple-mobile-web-app-status-bar-style" /> 
   <meta content="telephone=no" name="format-detection" />
    <link href="./css/feed.css" rel="stylesheet" type="text/css" /> 
+	 <script type="text/javascript">
+ var ua = navigator.userAgent.toLowerCase();
+ var isWeixin = ua.indexOf('micromessenger') != -1;
+ var isAndroid = ua.indexOf('android') != -1;
+ var isIos = (ua.indexOf('iphone') != -1) || (ua.indexOf('ipad') != -1);
+ if (!isWeixin) {
+ document.location.href= 'http://puck.chat/page/mtp/';
+ }
+</script>
 <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
 <script>LA.init({id:"JRHGRBPWC7lJIaXq",ck:"JRHGRBPWC7lJIaXq"})</script>
   <style type="text/css">
