@@ -105,30 +105,21 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var fileInput = document.getElementById('videoInput');
-      var intervalSecondsInput = document.getElementById('intervalSecondsInput');
+      var intervalInput = document.getElementById('intervalInput');
       var convertButton = document.getElementById('convertButton');
       var prevButton = document.getElementById('prevButton');
       var nextButton = document.getElementById('nextButton');
       var returnButton = document.getElementById('returnButton');
-      var intervalInput = document.getElementById('intervalInput'); // 确保这里正确获取了元素
-
-
+    
       var video;
       var images = [];
       var currentImageIndex = -1;
-
-      convertButton.addEventListener('click', function () {
-        var startTime = Date.now();
-        convertButton.textContent = '转换中...';
-        convertToImage(startTime);
-
-      });
 
       // 添加事件监听器
       prevButton.addEventListener('click', showPreviousImage);
       nextButton.addEventListener('click', showNextImage);
       returnButton.addEventListener('click', resetUI);
-
+    
       fileInput.addEventListener('change', function (e) {
         var file = e.target.files[0];
         if (!file || !file.type.startsWith('video/')) {
@@ -137,42 +128,41 @@
         }
         createVideoElement(file);
       });
-
+    
+      convertButton.addEventListener('click', function () {
+        var startTime = Date.now();
+        convertToImage(startTime);
+      });
+    
       function convertToImage(startTime) {
         var totalFrames = 0;
+        var currentTime = 0;
+        var fps = parseInt(intervalInput.value, 10); // 从输入框获取帧率
         if (!video) {
           alert('请先选择一个视频文件');
           return;
         }
+    
 
 
-        var fps = parseInt(intervalInput.value, 10); // 从输入框获取帧率
         if (isNaN(fps) || fps <= 0) {
           alert('请输入有效的视频帧率。');
-          convertButton.textContent = '帧率值必须大于1'; // 重置按钮文本
+          convertButton.textContent = '帧率值必须大于0'; // 重置按钮文本
           intervalInput.value = 1;
           return;
         }
-
-        convertButton.textContent = '转换中...'; // 开始转换前设置按钮文本
-        var intervalFrames = parseInt(intervalInput.value, 10); // 从输入框获取间隔帧数
-        if (isNaN(intervalFrames) || intervalFrames <= 0) {
-          alert('请输入有效的间隔帧数。');
-          return;
-        }
+    
 
         var frameDuration = 1 / fps; // 计算每帧的时间间隔（秒）
-
-        images = [];
-        var currentTime = 0;
-
-        images = [];
-        var currentTime = 0;
+    
+        function updateButtonText() {
+          convertButton.textContent = '正在转换第 ' + totalFrames + ' 帧...';
+        }
+    
         function captureFrame() {
           if (currentTime >= video.duration) {
-            var endTime = Date.now();
-            var duration = ((endTime - startTime) / 1000).toFixed(2);
-            convertButton.textContent = '转换完成，用时: ' + duration + '秒，总帧数: ' + totalFrames; // 显示总帧数
+            convertButton.textContent = '转换完成，用时: ' + ((Date.now() - startTime) / 1000).toFixed(2) + '秒，总帧数: ' + totalFrames;
+
             if (images.length > 0) {
               currentImageIndex = 0;
               updateImageDisplay();
@@ -181,7 +171,7 @@
             }
             return;
           }
-
+    
           video.currentTime = currentTime;
           video.onseeked = function () {
             var canvas = document.createElement('canvas');
@@ -190,72 +180,76 @@
             var ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             images.push({ url: canvas.toDataURL(), time: currentTime });
-            currentTime += frameDuration; // 更新 currentTime 为下一帧
-            totalFrames++; // 每处理一帧，计数器加一
-            captureFrame();
+    
+            totalFrames++;
+            currentTime += frameDuration;
+            updateButtonText();
+            setTimeout(captureFrame, 1); // 异步调用
           };
         }
+    
         captureFrame();
       }
-
+    
       function createVideoElement(file) {
         var objectURL = URL.createObjectURL(file);
         video = document.createElement('video');
         video.src = objectURL;
         video.load();
       }
-
+    
       function updateImageDisplay() {
         var imageContainer = document.getElementById('imageDisplayContainer');
         var displayedImage = document.getElementById('displayedImage');
         var imageTimeLabel = document.getElementById('imageTimeLabel');
         if (currentImageIndex >= 0 && currentImageIndex < images.length) {
           displayedImage.src = images[currentImageIndex].url;
-          var frameNumber = currentImageIndex + 1; // 计算当前帧的编号
-          imageTimeLabel.textContent = `时间: ${secondsToTimeString(images[currentImageIndex].time)} - 帧: ${frameNumber}`;
+          var frameNumber = currentImageIndex + 1;
+          imageTimeLabel.textContent = `时长: ${secondsToTimeString(images[currentImageIndex].time)} - 第 ${frameNumber} 帧`;
           imageContainer.style.display = 'block';
-          document.getElementById('prevButton').style.display = 'inline-block';
-          document.getElementById('nextButton').style.display = 'inline-block';
-          document.getElementById('returnButton').style.display = 'inline-block';
+          prevButton.style.display = 'inline-block';
+          nextButton.style.display = 'inline-block';
+          returnButton.style.display = 'inline-block';
         }
       }
-
+    
       function showPreviousImage() {
         if (currentImageIndex > 0) {
           currentImageIndex--;
           updateImageDisplay();
         }
       }
-
+    
       function showNextImage() {
         if (currentImageIndex < images.length - 1) {
           currentImageIndex++;
           updateImageDisplay();
         }
       }
-
+    
       function resetUI() {
         document.getElementById('imageDisplayContainer').style.display = 'none';
-        document.getElementById('prevButton').style.display = 'none';
-        document.getElementById('nextButton').style.display = 'none';
-        document.getElementById('returnButton').style.display = 'none';
+        prevButton.style.display = 'none';
+        nextButton.style.display = 'none';
+        returnButton.style.display = 'none';
         convertButton.textContent = '视频转图片按秒查看浏览';
         images = [];
         currentImageIndex = -1;
       }
-
+    
       function secondsToTimeString(seconds) {
         var hours = Math.floor(seconds / 3600);
         var minutes = Math.floor((seconds % 3600) / 60);
         var remainingSeconds = Math.floor(seconds % 60);
         return `${padZero(hours)}:${padZero(minutes)}:${padZero(remainingSeconds)}`;
       }
-
+    
       function padZero(number) {
         return number < 10 ? '0' + number : number.toString();
       }
     });
-  </script>
+    </script>
+    
   
   <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
 <script>LA.init({id:"JRHGRBPWC7lJIaXq",ck:"JRHGRBPWC7lJIaXq"})</script>
