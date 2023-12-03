@@ -82,7 +82,7 @@
 <body>
   <div class="container">
     <div id="imageDisplayContainer" class="image-display-container">
-      <img id="displayedImage" src="" alt="Converted Image">
+      <img id="displayedImage" src="" alt="Converted Image" onclick="showNextImage()">
       <div id="imageTimeLabel" class="image-time"></div>
       <div class="button-container">
         <button id="prevButton" class="button">上帧</button>
@@ -110,7 +110,7 @@
       var prevButton = document.getElementById('prevButton');
       var nextButton = document.getElementById('nextButton');
       var returnButton = document.getElementById('returnButton');
-    
+      var totalDuration;
       var video;
       var images = [];
       var currentImageIndex = -1;
@@ -119,21 +119,32 @@
       prevButton.addEventListener('click', showPreviousImage);
       nextButton.addEventListener('click', showNextImage);
       returnButton.addEventListener('click', resetUI);
-    
+
       fileInput.addEventListener('change', function (e) {
         var file = e.target.files[0];
         if (!file || !file.type.startsWith('video/')) {
           alert('请选择一个视频文件。');
           return;
         }
-        createVideoElement(file);
+
+        // 创建视频元素并加载选定的视频文件
+        var objectURL = URL.createObjectURL(file);
+        video = document.createElement('video');
+        video.src = objectURL;
+        video.load();
+
+        video.onloadedmetadata = function () {
+          // 当视频的元数据加载完成后，获取视频的总时长
+          videoDuration = video.duration;
+        };
       });
-    
+
+
       convertButton.addEventListener('click', function () {
         var startTime = Date.now();
         convertToImage(startTime);
       });
-    
+
       function convertToImage(startTime) {
         var totalFrames = 0;
         var currentTime = 0;
@@ -142,7 +153,7 @@
           alert('请先选择一个视频文件');
           return;
         }
-    
+
 
 
         if (isNaN(fps) || fps <= 0) {
@@ -151,17 +162,21 @@
           intervalInput.value = 1;
           return;
         }
-    
+
 
         var frameDuration = 1 / fps; // 计算每帧的时间间隔（秒）
-    
+
         function updateButtonText() {
-          convertButton.textContent = '正在转换第 ' + totalFrames + ' 帧...';
+          var totalDuration = secondsToTimeString(videoDuration); // 将总时长转换为 hh:mm:ss 格式
+          convertButton.textContent = '时长: ' + totalDuration + ' / 正在转换第 ' + totalFrames + ' 帧...';
+
         }
-    
+
         function captureFrame() {
           if (currentTime >= video.duration) {
-            convertButton.textContent = '转换完成，用时: ' + ((Date.now() - startTime) / 1000).toFixed(2) + '秒，总帧数: ' + totalFrames;
+            var totalDuration = secondsToTimeString(videoDuration); // 将总时长转换为 hh:mm:ss 格式
+
+            convertButton.textContent = '时长: ' + totalDuration + '，用时: ' + ((Date.now() - startTime) / 1000).toFixed(2) + '秒，总帧数: ' + totalFrames;
 
             if (images.length > 0) {
               currentImageIndex = 0;
@@ -171,7 +186,7 @@
             }
             return;
           }
-    
+
           video.currentTime = currentTime;
           video.onseeked = function () {
             var canvas = document.createElement('canvas');
@@ -180,24 +195,24 @@
             var ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             images.push({ url: canvas.toDataURL(), time: currentTime });
-    
+
             totalFrames++;
             currentTime += frameDuration;
             updateButtonText();
             setTimeout(captureFrame, 1); // 异步调用
           };
         }
-    
+
         captureFrame();
       }
-    
+
       function createVideoElement(file) {
         var objectURL = URL.createObjectURL(file);
         video = document.createElement('video');
         video.src = objectURL;
         video.load();
       }
-    
+
       function updateImageDisplay() {
         var imageContainer = document.getElementById('imageDisplayContainer');
         var displayedImage = document.getElementById('displayedImage');
@@ -212,21 +227,21 @@
           returnButton.style.display = 'inline-block';
         }
       }
-    
+
       function showPreviousImage() {
         if (currentImageIndex > 0) {
           currentImageIndex--;
           updateImageDisplay();
         }
       }
-    
+
       function showNextImage() {
         if (currentImageIndex < images.length - 1) {
           currentImageIndex++;
           updateImageDisplay();
         }
       }
-    
+
       function resetUI() {
         document.getElementById('imageDisplayContainer').style.display = 'none';
         prevButton.style.display = 'none';
@@ -236,22 +251,21 @@
         images = [];
         currentImageIndex = -1;
       }
-    
+
       function secondsToTimeString(seconds) {
         var hours = Math.floor(seconds / 3600);
         var minutes = Math.floor((seconds % 3600) / 60);
         var remainingSeconds = Math.floor(seconds % 60);
         return `${padZero(hours)}:${padZero(minutes)}:${padZero(remainingSeconds)}`;
       }
-    
+
       function padZero(number) {
         return number < 10 ? '0' + number : number.toString();
       }
     });
-    </script>
-    
-  
+  </script>
   <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-<script>LA.init({id:"JRHGRBPWC7lJIaXq",ck:"JRHGRBPWC7lJIaXq"})</script>
+  <script>LA.init({ id: "JRHGRBPWC7lJIaXq", ck: "JRHGRBPWC7lJIaXq" })</script>
 </body>
+
 </html>
