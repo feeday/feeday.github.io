@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://github.githubassets.com/favicons/favicon.svg">
+    <title>金钱计算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+        }
+
+        #loan-form label,
+        #loan-form input,
+        select {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #loan-form button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #loan-form button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px auto;
+        }
+
+        #loan-form button:hover {
+            background-color: #0056b3;
+            color: #ffffff;
+        }
+
+        #loan-form input:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f4f4f4;
+            box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .result p:first-child {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form id="loan-form">
+            <label for="amount">金额 (万元):</label>
+            <input type="number" id="amount" placeholder="金额（万元）" step="295" value="5">
+
+            <label for="interest">年利率(%):</label>
+            <input type="number" id="interest" placeholder="年利率" step="0.01" value="0.2" required>
+
+
+            <label for="months">期限 (月):</label>
+            <select id="months" required>
+                <option value="1">1 月</option>
+                <option value="3">3 月</option>
+                <option value="6">6 月</option>
+                <option value="12">12 月</option>
+                <option value="24">24 月</option>
+                <option value="36">36 月</option>
+                <option value="60">60 月</option>
+            </select>
+
+
+            <input type="submit" value="金钱计算器" class="button">
+            <button class="button" onclick="window.open('../mtp/index.html')">视频转图片</button>
+
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('loan-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // 获取用户输入
+            var amount = document.getElementById('amount').value * 10000; // 转换为元
+            var interest = document.getElementById('interest').value / 100; // 年利率
+            var months = document.getElementById('months').value; // 期限（月）
+
+            // 计算单利总利息
+            var totalInterest = (amount * interest * months) / 12;
+            // 计算还款总额
+            var totalPayment = amount + totalInterest;
+            // 计算每期还款金额
+            var monthlyPayment = totalPayment / months;
+
+            if (isFinite(monthlyPayment)) {
+                var resultElement = document.getElementById('result');
+                resultElement.innerHTML = `
+          <p>单利: ${(interest * 100).toFixed(2)}%</p>
+          <p>利息: ${totalInterest.toFixed(2)}元</p>
+          <p>还款: ${totalPayment.toFixed(2)}元</p>
+          <p>每期: ${monthlyPayment.toFixed(2)}元</p>
+          <p>本金: ${(amount).toFixed(2)}元</p>
+        `;
+            } else {
+                alert('请检查你的输入！');
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var interestInput = document.getElementById('interest');
+            var monthsInput = document.getElementById('months');
+
+            // 定义利率到月份的映射
+            var rateToMonths = {
+                '0.2': '1',
+                '1.25': '3',
+                '1.45': '6',
+                '1.55': '12',
+                '1.85': '24',
+                '2.2': '36',
+                '2.25': '60'
+            };
+
+            // 定义月份到利率的映射
+            var monthsToRate = {
+                '1': '0.2',
+                '3': '1.25',
+                '6': '1.45',
+                '12': '1.55',
+                '24': '1.85',
+                '36': '2.2',
+                '60': '2.25'
+            };
+
+            interestInput.addEventListener('input', function () {
+                var months = rateToMonths[interestInput.value];
+                if (months) {
+                    monthsInput.value = months;
+                }
+            });
+
+            monthsInput.addEventListener('input', function () {
+                var rate = monthsToRate[monthsInput.value];
+                if (rate) {
+                    interestInput.value = rate;
+                }
+            });
+        });
+    </script>
+    <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
+    <script>LA.init({ id: "JRHGRBPWC7lJIaXq", ck: "JRHGRBPWC7lJIaXq" })</script>
+</body>
+
+</html>
