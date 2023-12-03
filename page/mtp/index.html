@@ -1,208 +1,259 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="https://github.githubassets.com/favicons/favicon.svg">
   <title>视频转图片</title>
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-  }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
 
-  .container {
-    max-width: 100%;
-    padding: 20px;
-    text-align: center;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    margin: 10px;
-  }
+    .container {
+      max-width: 100%;
+      padding: 20px;
+      text-align: center;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      margin: 10px;
+    }
 
-  #videoInput, #intervalSecondsInput, #convertButton, .button {
-    display: block;
-    margin: 10px auto;
-    padding: 10px;
-    width: 80%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+    #videoInput,
+    #intervalInput,
+    #intervalSecondsInput,
+    .button,
+    .button2 {
+      /* 添加 #intervalInput */
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
 
-  #imageContainer {
-    margin-top: 20px;
-  }
+    #imageDisplayContainer {
+      display: none;
+      text-align: center;
+      margin-bottom: 10px;
+    }
 
-  .image {
-    max-width: 100%;
-    height: auto;
-    margin: 10px auto;
-    display: block;
-  }
+    #displayedImage {
+      max-width: 100%;
+      height: auto;
+    }
 
-  .buttonContainer {
-    text-align: center;
-  }
+    .image-time {
+      margin-top: 5px;
+      font-size: 0.8em;
+      color: #666;
+    }
 
-  .button, #downloadButton, #downloadAllButton {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
 
-  #downloadAllButton {
-    display: none;
-  }
-</style>
+    .button,
+    .button2 {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    .button2 {
+      display: inline-block;
+    }
+  </style>
+
 </head>
+
 <body>
   <div class="container">
-    <h1>视频转图片</h1>
-    <input type="file" id="videoInput" accept="video/mp4">
-    <input type="number" id="intervalSecondsInput" placeholder="请输入间隔秒数">
-    <button id="convertButton">视频转图片</button>
-    <button class="button"  target="_blank" onclick="window.location.href='https://chat.openai.com/g/g-lGeKH5XHU-jin-qian-ji-suan-qi'">金钱计算器</button>
-    <div id="imageContainer"></div>
-    <div class="buttonCenter">
-      <button id="downloadAllButton">下载图片（浏览器限制十张以内批量下载）</button>
+    <div id="imageDisplayContainer" class="image-display-container">
+      <img id="displayedImage" src="" alt="Converted Image">
+      <div id="imageTimeLabel" class="image-time"></div>
+      <div class="button-container">
+        <button id="prevButton" class="button">上帧</button>
+        <button id="returnButton" class="button">清除</button>
+        <button class="button" onclick="window.open('https://3g.gljlw.com/diy/douyin.php', '_blank')">水印</button>
+        <button id="nextButton" class="button">下帧</button>
+      </div>
     </div>
+    <input type="file" id="videoInput" accept="video/*">
+    <input type="number" id="intervalInput" value="1">
+
+    <button class="button2" id="convertButton">视频转图片-每秒查看帧数</button>
+    <button class="button2"
+      onclick="window.open('https://tool.browser.qq.com/audio_extractor.html', '_blank')">在线视转音-视频提取音频</button>
+    <button class="button2" onclick="window.open('https://aixdownloader.com/', '_blank')">电脑版下载-浏览器的插件</button>
+
+
   </div>
 
- <script>
-    document.addEventListener('DOMContentLoaded', function() {
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
       var fileInput = document.getElementById('videoInput');
       var intervalSecondsInput = document.getElementById('intervalSecondsInput');
-      var imageContainer = document.getElementById('imageContainer');
-      var downloadAllButton = document.getElementById('downloadAllButton');
+      var convertButton = document.getElementById('convertButton');
+      var prevButton = document.getElementById('prevButton');
+      var nextButton = document.getElementById('nextButton');
+      var returnButton = document.getElementById('returnButton');
+      var intervalInput = document.getElementById('intervalInput'); // 确保这里正确获取了元素
+
 
       var video;
       var images = [];
+      var currentImageIndex = -1;
+      var totalFrames = 0;
 
-      fileInput.addEventListener('change', function(e) {
-        var file = e.target.files[0];
-        var objectURL = URL.createObjectURL(file);
-
-        video = document.createElement('video');
-        video.src = objectURL;
-        video.preload = 'metadata';
-
-        video.onloadedmetadata = function() {
-          imageContainer.innerHTML = '';
-          downloadAllButton.style.display = 'none';
-        };
-
-        video.load();
+      convertButton.addEventListener('click', function () {
+        var startTime = Date.now();
+        convertButton.textContent = '转换中...';
+        convertToImage(startTime);
       });
 
-      function convertToImage() {
+      // 添加事件监听器
+      prevButton.addEventListener('click', showPreviousImage);
+      nextButton.addEventListener('click', showNextImage);
+      returnButton.addEventListener('click', resetUI);
+
+      fileInput.addEventListener('change', function (e) {
+        var file = e.target.files[0];
+        if (!file || !file.type.startsWith('video/')) {
+          alert('请选择一个视频文件。');
+          return;
+        }
+        createVideoElement(file);
+      });
+
+      function convertToImage(startTime) {
         if (!video) {
-          imageContainer.innerHTML = '请先选择一个视频文件';
+          alert('请先选择一个视频文件');
           return;
         }
 
-        var intervalSeconds = parseInt(intervalSecondsInput.value, 10);
-        if (isNaN(intervalSeconds) || intervalSeconds <= 0 || intervalSeconds > video.duration) {
-          imageContainer.innerHTML = '无效的间隔秒数';
+
+        var fps = parseInt(intervalInput.value, 10); // 从输入框获取帧率
+        if (isNaN(fps) || fps <= 0) {
+          alert('请输入有效的视频帧率。');
           return;
         }
+
+        var intervalFrames = parseInt(intervalInput.value, 10); // 从输入框获取间隔帧数
+        if (isNaN(intervalFrames) || intervalFrames <= 0) {
+          alert('请输入有效的间隔帧数。');
+          return;
+        }
+
+        var frameDuration = 1 / fps; // 计算每帧的时间间隔（秒）
 
         images = [];
         var currentTime = 0;
 
+        images = [];
+        var currentTime = 0;
         function captureFrame() {
           if (currentTime >= video.duration) {
-            displayImages();
+            var endTime = Date.now();
+            var duration = ((endTime - startTime) / 1000).toFixed(2);
+            convertButton.textContent = '转换完成，用时: ' + duration + '秒，总帧数: ' + totalFrames; // 显示总帧数
+            if (images.length > 0) {
+              currentImageIndex = 0;
+              updateImageDisplay();
+            } else {
+              alert('未能从视频中提取任何图片。');
+            }
             return;
           }
 
           video.currentTime = currentTime;
-          video.onseeked = function() {
+          video.onseeked = function () {
             var canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-
             var ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            var imageUrl = canvas.toDataURL();
-            images.push({ url: imageUrl, time: currentTime });
-            currentTime += intervalSeconds;
+            images.push({ url: canvas.toDataURL(), time: currentTime });
+            currentTime += frameDuration; // 更新 currentTime 为下一帧
+            totalFrames++; // 每处理一帧，计数器加一
             captureFrame();
           };
         }
-
         captureFrame();
-        imageContainer.innerHTML = '正在处理，请稍候...';
       }
 
-      function displayImages() {
-        imageContainer.innerHTML = '';
+      function createVideoElement(file) {
+        var objectURL = URL.createObjectURL(file);
+        video = document.createElement('video');
+        video.src = objectURL;
+        video.load();
+      }
 
-        for (var i = 0; i < images.length; i++) {
-          var imageElement = document.createElement('img');
-          imageElement.src = images[i].url;
-          imageElement.classList.add('image');
-          
-          imageElement.addEventListener('click', function(url) {
-            return function() {
-              var newWindow = window.open('', '_blank');
-              newWindow.document.write('<img src="' + url + '">');
-            }
-          }(images[i].url));
-          
-          imageContainer.appendChild(imageElement);
+      function updateImageDisplay() {
+        var imageContainer = document.getElementById('imageDisplayContainer');
+        var displayedImage = document.getElementById('displayedImage');
+        var imageTimeLabel = document.getElementById('imageTimeLabel');
+        if (currentImageIndex >= 0 && currentImageIndex < images.length) {
+          displayedImage.src = images[currentImageIndex].url;
+          var frameNumber = currentImageIndex + 1; // 计算当前帧的编号
+          imageTimeLabel.textContent = `时间: ${secondsToTimeString(images[currentImageIndex].time)} - 帧: ${frameNumber}`;
+          imageContainer.style.display = 'block';
+          document.getElementById('prevButton').style.display = 'inline-block';
+          document.getElementById('nextButton').style.display = 'inline-block';
+          document.getElementById('returnButton').style.display = 'inline-block';
         }
-
-        downloadAllButton.style.display = 'block';
-        downloadAllButton.addEventListener('click', function() {
-          var counter = 0;
-
-          for (var i = 0; i < images.length; i++) {
-            var link = document.createElement('a');
-            var timeString = secondsToTimeString(images[i].time);
-            link.download = getFileNameWithoutExtension(fileInput.files[0].name) + '_' + timeString + '.png';
-            link.href = images[i].url;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-
-            link.onload = function() {
-              counter++;
-
-              if (counter === images.length) {
-                document.body.removeChild(link);
-              }
-            };
-          }
-        });
       }
 
-      function getFileNameWithoutExtension(fileName) {
-        return fileName.split('.').slice(0, -1).join('.');
+      function showPreviousImage() {
+        if (currentImageIndex > 0) {
+          currentImageIndex--;
+          updateImageDisplay();
+        }
+      }
+
+      function showNextImage() {
+        if (currentImageIndex < images.length - 1) {
+          currentImageIndex++;
+          updateImageDisplay();
+        }
+      }
+
+      function resetUI() {
+        document.getElementById('imageDisplayContainer').style.display = 'none';
+        document.getElementById('prevButton').style.display = 'none';
+        document.getElementById('nextButton').style.display = 'none';
+        document.getElementById('returnButton').style.display = 'none';
+        convertButton.textContent = '视频转图片按秒查看浏览';
+        images = [];
+        currentImageIndex = -1;
       }
 
       function secondsToTimeString(seconds) {
         var hours = Math.floor(seconds / 3600);
         var minutes = Math.floor((seconds % 3600) / 60);
         var remainingSeconds = Math.floor(seconds % 60);
-
-        return padZero(hours) + '_' + padZero(minutes) + '_' + padZero(remainingSeconds);
+        return `${padZero(hours)}:${padZero(minutes)}:${padZero(remainingSeconds)}`;
       }
 
       function padZero(number) {
-        return (number < 10 ? '0' : '') + number;
+        return number < 10 ? '0' + number : number.toString();
       }
-
-      var convertButton = document.getElementById('convertButton');
-      convertButton.addEventListener('click', convertToImage);
     });
-  </script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
+  </script>
+  
+  <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
 <script>LA.init({id:"JRHGRBPWC7lJIaXq",ck:"JRHGRBPWC7lJIaXq"})</script>
 </body>
 </html>
