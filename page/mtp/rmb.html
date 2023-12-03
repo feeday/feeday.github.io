@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh">
 
@@ -105,21 +106,20 @@
             <input type="number" id="interest" placeholder="年利率" step="0.01" value="0.2" required>
 
 
-            <label for="months">期限 (月):</label>
+            <label for="months">(月/年): (存款/贷款)</label>
             <select id="months" required>
-                <option value="1">1 月</option>
-                <option value="3">3 月</option>
-                <option value="6">6 月</option>
-                <option value="12">12 月</option>
-                <option value="24">24 月</option>
-                <option value="36">36 月</option>
-                <option value="60">60 月</option>
+                <option value="1">1 月 整存整取</option>
+                <option value="3">3 月 整存整取</option>
+                <option value="6">6 月 整存整取</option>
+                <option value="12">12 月 整存整取</option>
+                <option value="24">24 月 整存整取</option>
+                <option value="36">36 月 整存整取</option>
+                <option value="60">60 月 整存整取</option>
                 <option value="360">30 年 商贷利率</option>
             </select>
 
 
             <input type="submit" value="金钱计算器" class="button">
-            <button class="button" onclick="window.open('https://weixin.gjj.beijing.gov.cn/weixin/funcrouter?token=Y2RjYmJjNWE0YzkwNDc4MWJlZmUzYTFmN2EyNWYxNDAyNWI1MjRiNTVmODk0NmQ0OTUwM2I0YjFkODZmNWJjYTE3MDE1OTY5MjkyNjM&state=gh_d7dfe024a186.loan_cal&o3ioNxEQrqXmvfA6_92oc3rnM0Q8=', '_blank')">商贷公积金</button>
             <button class="button" onclick="window.open('../mtp/index.html')">视频转图片</button>
 
         </form>
@@ -128,36 +128,53 @@
     </div>
 
     <script>
-        document.getElementById('loan-form').addEventListener('submit', function (e) {
-            e.preventDefault();
+      function calculateLoan(principal, annual_interest_rate, months) {
+    // 等额均还公式计算每月还款额
+    var monthly_interest_rate = annual_interest_rate / 12;
+    var monthly_payment = principal * monthly_interest_rate * (1 + monthly_interest_rate)**months / ((1 + monthly_interest_rate)**months - 1);
 
-            // 获取用户输入
-            var amount = document.getElementById('amount').value * 10000; // 转换为元
-            var interest = document.getElementById('interest').value / 100; // 年利率
-            var months = document.getElementById('months').value; // 期限（月）
+    // 计算本息合计
+    var total_payment = monthly_payment * months;
 
-            // 计算单利总利息
-            var totalInterest = (amount * interest * months) / 12;
-            // 计算还款总额
-            var totalPayment = amount + totalInterest;
-            // 计算每期还款金额
-            var monthlyPayment = totalPayment / months;
+    // 计算总利息
+    var total_interest = total_payment - principal;
 
-            if (isFinite(monthlyPayment)) {
-                var resultElement = document.getElementById('result');
-                resultElement.innerHTML = `
-          <p>单利: ${(interest * 100).toFixed(2)}%</p>
-          <p>利息: ${totalInterest.toFixed(2)}元</p>
-          <p>还款: ${totalPayment.toFixed(2)}元</p>
-          <p>每期: ${monthlyPayment.toFixed(2)}元</p>
-          <p>本金: ${(amount).toFixed(2)}元</p>
+    return { monthly_payment, total_interest, total_payment };
+}
+
+document.getElementById('loan-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // 获取用户输入
+    var amount = document.getElementById('amount').value * 10000; // 转换为元
+    var interest = document.getElementById('interest').value / 100; // 年利率
+    var months = document.getElementById('months').value; // 期限（月）
+
+    var result;
+    if (months == '360') {
+        // 使用等额均还方式计算
+        result = calculateLoan(amount, interest, parseInt(months));
+    } else {
+        // 使用单利方式计算
+        var totalInterest = (amount * interest * months) / 12;
+        var totalPayment = amount + totalInterest;
+        var monthlyPayment = totalPayment / months;
+        result = { monthly_payment: monthlyPayment, total_interest: totalInterest, total_payment: totalPayment };
+    }
+
+    if (isFinite(result.monthly_payment)) {
+        var resultElement = document.getElementById('result');
+        resultElement.innerHTML = `
+            <p>单利: ${(interest * 100).toFixed(2)}%</p>
+            <p>利息: ${result.total_interest.toFixed(2)}元</p>
+            <p>每期: ${result.monthly_payment.toFixed(2)}元</p>
+            <p>本金: ${(amount).toFixed(2)}元</p>
+            <p>总计: ${result.total_payment.toFixed(2)}元</p>
         `;
-            } else {
-                alert('请检查你的输入！');
-            }
-        });
-    </script>
-    <script>
+    } else {
+        alert('请检查你的输入！');
+    }
+});
         document.addEventListener('DOMContentLoaded', function () {
             var interestInput = document.getElementById('interest');
             var monthsInput = document.getElementById('months');
