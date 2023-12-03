@@ -116,12 +116,12 @@
       var video;
       var images = [];
       var currentImageIndex = -1;
-      var totalFrames = 0;
 
       convertButton.addEventListener('click', function () {
         var startTime = Date.now();
         convertButton.textContent = '转换中...';
         convertToImage(startTime);
+
       });
 
       // 添加事件监听器
@@ -139,6 +139,7 @@
       });
 
       function convertToImage(startTime) {
+        var totalFrames = 0;
         if (!video) {
           alert('请先选择一个视频文件');
           return;
