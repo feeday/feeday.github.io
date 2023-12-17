@@ -173,7 +173,7 @@
           if (currentTime >= video.duration) {
             var totalDuration = secondsToTimeString(videoDuration); // 将总时长转换为 hh:mm:ss 格式
 
-            convertButton.textContent = 用时: ' + ((Date.now() - startTime) / 1000).toFixed(2) + '秒，总帧数: ' + totalFrames;
+            convertButton.textContent = '用时: ' + ((Date.now() - startTime) / 1000).toFixed(2) + '秒，总帧数: ' + totalFrames;
 
             if (images.length > 0) {
               currentImageIndex = 0;
