@@ -87,7 +87,7 @@
       <div class="button-container">
         <button id="prevButton" class="button">上帧</button>
         <button id="returnButton" class="button">清除</button>
-        <button class="button" onclick="window.open('https://3g.gljlw.com/diy/douyin.php', '_blank')">水印</button>
+  
         <button id="nextButton" class="button">下帧</button>
       </div>
     </div>
@@ -95,12 +95,7 @@
     <input type="number" id="intervalInput" value="1">
 
     <button class="button2" id="convertButton">视频转图片-每秒查看帧数</button>
-    <button class="button2" onclick="window.open('https://tool.browser.qq.com/audio_extractor.html', '_blank')">在线视频提取音频</button>
-    <button class="button2" onclick="window.open('../mtp/rmb.html')">金钱计算器</button>
-    <button class="button2" onclick="window.open('https://feeday.github.io/gpt/')">智能提问器</button>
-
-
-
+     <button class="button" onclick="window.open('https://3g.gljlw.com/diy/douyin.php', '_blank')">短视频提取</button>
   </div>
 
   <script>
@@ -177,7 +172,7 @@
           if (currentTime >= video.duration) {
             var totalDuration = secondsToTimeString(videoDuration); // 将总时长转换为 hh:mm:ss 格式
 
-            convertButton.textContent = '时长: ' + totalDuration + '，用时: ' + ((Date.now() - startTime) / 1000).toFixed(2) + '秒，总帧数: ' + totalFrames;
+            convertButton.textContent = 用时: ' + ((Date.now() - startTime) / 1000).toFixed(2) + '秒，总帧数: ' + totalFrames;
 
             if (images.length > 0) {
               currentImageIndex = 0;
