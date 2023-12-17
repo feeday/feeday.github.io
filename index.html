@@ -241,19 +241,18 @@ function stopSpeechRecognition() {
 <body>
   <div class="search-container">
     <select id="searchEngine">
-      <option value="https://www.google.com/search?q=">谷歌搜索</option>
+      <option value="https://www.google.com/search?q=" >谷歌搜索</option>
       <option value="https://www.baidu.com/s?q1=">百度搜索</option>
-      <option value="https://search.bilibili.com/all?keyword=">哔站视频</option>
+      <option value="https://search.bilibili.com/all?keyword="selected>哔站视频</option>
       <option value="https://www.douyin.com/search/">抖音视频</option>
       <option value="https://www.youtube.com/results?search_query=">油管视频</option>
       <option value="https://pic.sogou.com/pics?query=">搜狗图片</option>
       <option value="https://tieba.baidu.com/f/search/res?ie=utf-8&amp;qw=">贴吧帖子</option>
-      <option value="https://github.com/feeday/feeday.github.io/issues?q=" selected>代码笔记</option>
     </select>
-    <input type="text" id="searchInput" placeholder="搜索我的笔记和问题" onfocus="if (document.getElementById('searchEngine').value === 'https://github.com/feeday/feeday.github.io/issues?q=') this.placeholder = '搜索我的笔记和问题'; else this.placeholder = '';">
+    <input type="text" id="searchInput" placeholder="哔哩哔哩视频搜索" onfocus="if (document.getElementById('searchEngine').value === 'https://search.bilibili.com/all?keyword=') this.placeholder = '哔哩哔哩视频搜索'; else this.placeholder = '';">
     <button class="button" onclick="search()">搜索</button>
     <button class="button" onclick="document.getElementById(&#39;searchInput&#39;).value = &#39;&#39;;">清空</button>
-    <a href="https://github.com/feeday/feeday.github.io/issues"  target="_blank" ><button class="button">笔记</button></a>
+    <a href="https://github.com/feeday/feeday.github.io"  target="_blank" ><button class="button">项目</button></a>
     <button id="startButton" class="button" onclick="startSpeechRecognition()">语音输入</button>
     <button id="stopButton" class="button" onclick="stopSpeechRecognition()">停止输入</button>
   </div>
