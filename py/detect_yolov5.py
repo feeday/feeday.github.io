@@ -1,10 +1,16 @@
 # YOLOv5 🚀 by Ultralytics, AGPL-3.0 license
 """
+
 Run YOLOv5 detection inference on images, videos, directories, globs, YouTube, webcam, streams, etc.
-https://www.anaconda.com/download-success
-https://github.com/ultralytics/yolov5
-https://codeload.github.com/ultralytics/yolov5/zip/refs/heads/master
-(base) PS F:\yolov5> pip install yolov5
+
+Install - config:
+    https://www.anaconda.com/download-success
+    https://github.com/ultralytics/yolov5
+    https://codeload.github.com/ultralytics/yolov5/zip/refs/heads/master
+    https://docs.ultralytics.com/zh/
+    (base) PS F:\yolov5> pip install yolov5
+    (base) PS F:\yolov5> python detect.py
+
 Usage - sources:
     $ python detect.py --weights yolov5s.pt --source 0                               # webcam
                                                      img.jpg                         # image
