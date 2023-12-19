@@ -1,3 +1,6 @@
+# 筛选复制移到人脸图片
+## Python
+```
 import cv2
 import sys
 import dlib
@@ -67,3 +70,4 @@ with tqdm(total=len(image_files), desc="复制进度", unit="file") as pbar:
         pbar.update(1)
 
 print(f"人脸检测和复制完成，共复制了 {copied_count} 张图片。")
+```
