@@ -6,8 +6,6 @@ import os
 import shutil
 from tqdm import tqdm
 
-# 筛选移到复制人脸图片
-
 # 设置源文件夹和目标文件夹路径
 source_dir = r"H:\Dataset\Logs\del\1" 
 dest_dir = r"H:\Dataset\Logs\del\face"
