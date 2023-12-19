@@ -2,6 +2,7 @@
 """
 Run YOLOv5 detection inference on images, videos, directories, globs, YouTube, webcam, streams, etc.
 https://github.com/ultralytics/yolov5
+https://codeload.github.com/ultralytics/yolov5/zip/refs/heads/master
 Usage - sources:
     $ python detect.py --weights yolov5s.pt --source 0                               # webcam
                                                      img.jpg                         # image
