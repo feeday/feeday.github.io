@@ -3,6 +3,10 @@ import torch
 from PIL import Image
 import os
 
+# pip install torch
+# pip install transformers
+# pip install Pillow
+
 # 加载模型权重
 processor = AutoImageProcessor.from_pretrained("model")
 model = ResNetForImageClassification.from_pretrained("model")
