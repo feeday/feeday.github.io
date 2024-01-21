@@ -257,13 +257,16 @@ n位的数字：\d{n}
 由纯网址组成的字符串：https?:\/\/[^\s/$.?#].[^\s]*"></textarea>
   <div class="search-container">
     <select id="searchEngine">
-      <option value="https://www.google.com/search?q=" >谷歌搜索</option>
-      <option value="https://www.baidu.com/s?q2=">百度搜索</option>
-      <option value="https://search.bilibili.com/all?keyword="selected>哔站视频</option>
-      <option value="https://www.douyin.com/search/">抖音视频</option>
-      <option value="https://www.youtube.com/results?search_query=">油管视频</option>
-      <option value="https://pic.sogou.com/pics?query=">搜狗图片</option>
-      <option value="https://tieba.baidu.com/f/search/res?ie=utf-8&amp;qw=">贴吧帖子</option>
+    <option value="https://pic.sogou.com/pics?query=">sogou.com</option>
+    <option value="https://www.youtube.com/results?search_query=">youtube.com</option>
+    <option value="https://s.weibo.com/weibo?q=">weibo.com</option>
+    <option value="https://github.com/search?q=" >github.com</option>
+    <option value="https://www.google.com/search?q=" >google.com</option>
+    <option value="https://pic.sogou.com/pics?query=">pic.sogou.com</option>
+    <option value="https://www.baidu.com/s?q2=">www.baidu.com</option>
+    <option value="https://tieba.baidu.com/f/search/res?ie=utf-8&amp;qw=">tieba.baidu.com</option>
+    <option value="https://search.bilibili.com/all?keyword="selected>>www.bilibili.com</option>
+    <option value="https://www.douyin.com/search/">www.douyin.com</option>    
     </select>
     <input type="text" id="searchInput" placeholder="哔哩哔哩视频搜索" onfocus="if (document.getElementById('searchEngine').value === 'https://search.bilibili.com/all?keyword=') this.placeholder = '哔哩哔哩视频搜索'; else this.placeholder = '';">
     <button class="button" onclick="search()">搜索</button>
