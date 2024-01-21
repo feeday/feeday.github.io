@@ -265,7 +265,7 @@ n位的数字：\d{n}
     <option value="https://pic.sogou.com/pics?query=">pic.sogou.com</option>
     <option value="https://www.baidu.com/s?q2=">www.baidu.com</option>
     <option value="https://tieba.baidu.com/f/search/res?ie=utf-8&amp;qw=">tieba.baidu.com</option>
-    <option value="https://search.bilibili.com/all?keyword="selected>>www.bilibili.com</option>
+    <option value="https://search.bilibili.com/all?keyword="selected>www.bilibili.com</option>
     <option value="https://www.douyin.com/search/">www.douyin.com</option>    
     </select>
     <input type="text" id="searchInput" placeholder="哔哩哔哩视频搜索" onfocus="if (document.getElementById('searchEngine').value === 'https://search.bilibili.com/all?keyword=') this.placeholder = '哔哩哔哩视频搜索'; else this.placeholder = '';">
@@ -274,6 +274,8 @@ n位的数字：\d{n}
     <button id="startButton" class="button" onclick="startSpeechRecognition()">语音输入</button>
     <button id="stopButton" class="button" onclick="stopSpeechRecognition()">停止输入</button>
   </div>
+	<div style="height: 10px;"></div>
+
 <div class="input-group">
 <input id="search-input" style="width: 25%;" placeholder="输入要查找的文本">
 <input id="replace-input" style="width: 25%;" placeholder="输入要替换的文本">
