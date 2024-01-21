@@ -265,10 +265,11 @@ n位的数字：\d{n}
     <option value="https://www.youtube.com/results?search_query=">youtube.com</option>
     <option value="https://www.baidu.com/s?q2=">www.baidu.com</option>
     <option value="https://tieba.baidu.com/f/search/res?ie=utf-8&amp;qw=">tieba.baidu.com</option>
-    <option value="https://search.bilibili.com/all?keyword="selected>www.bilibili.com</option>
-    <option value="https://www.douyin.com/search/">www.douyin.com</option>    
+    <option value="https://search.bilibili.com/all?keyword=">www.bilibili.com</option>
+    <option value="https://www.douyin.com/search/">www.douyin.com</option>
+    <option value="https://github.com/feeday/feeday.github.io/issues?q="selected>feeday.github.io</option>
     </select>
-    <input type="text" id="searchInput" placeholder="com keyword search" onfocus="if (document.getElementById('searchEngine').value === 'https://search.bilibili.com/all?keyword=') this.placeholder = 'com keyword search'; else this.placeholder = '';">
+    <input type="text" id="searchInput" placeholder="feeday.github.io" onfocus="if (document.getElementById('searchEngine').value === 'https://github.com/feeday/feeday.github.io/issues?q=') this.placeholder = 'feeday.github.io'; else this.placeholder = '';">
     <button class="button" onclick="search()">搜索</button>
     <button class="button" onclick="document.getElementById(&#39;searchInput&#39;).value = &#39;&#39;;">清空</button>
     <button id="startButton" class="button" onclick="startSpeechRecognition()">语音输入</button>
