@@ -101,7 +101,7 @@ h1 {
       border-radius: 4px;
       outline: none;
       font-size: 16px;
-      width: 680px;
+      width: 1080px;
     }
 
     button {
@@ -182,60 +182,16 @@ h1 {
       cursor: not-allowed;
     }
   </style>
-  <script>
-    function search() {
-      var searchInput = document.getElementById("searchInput");
-      var searchEngine = document.getElementById("searchEngine").value;
-      var query = encodeURIComponent(searchInput.value);
-      var url = searchEngine + query; // 构建完整的搜索链接
-      window.open(url, "_blank"); // 在新页面打开搜索结果
+<script>
+    function searchRedirect(event) {
+      if (event.key === "Enter") {
+        event.preventDefault(); // 防止表单默认提交行为
+        var searchEngine = document.getElementById('searchEngine').value;
+        var query = document.getElementById('searchInput').value;
+        var searchUrl = searchEngine + encodeURIComponent(query);
+        window.open(searchUrl, '_blank'); // 在新标签页中打开搜索URL
+      }
     }
-
-    // 创建语音识别对象和按钮元素的引用
-    const recognition = new webkitSpeechRecognition();
-    const startButton = document.getElementById('startButton');
-    const stopButton = document.getElementById('stopButton');
-
-    // 设置语言为中文（中国）
-    recognition.lang = 'zh-CN';
-
-    // 当识别到语音时的回调函数
-    recognition.onresult = function(event) {
-      // 获取识别结果
-      const transcript = event.results[0][0].transcript;
-
-      // 将识别结果填充到输入框
-      document.getElementById('searchInput').value = transcript;
-    }
-
-    // 实时更新语音输入
-    recognition.onaudiostart = function(event) {
-      setInterval(function() {
-        const interimTranscript = recognition.interimResults[recognition.interimResults.length - 1][0].transcript;
-        document.getElementById('searchInput').value = interimTranscript;
-      }, 200);
-    }
-
-    // 开始语音识别
-function startSpeechRecognition() {
-  recognition.start();
-
-  // 禁用开始按钮，启用停止按钮
-  startButton.disabled = true;
-  stopButton.disabled = false;
-
-  // 设置10秒后停止语音识别
-  setTimeout(stopSpeechRecognition, 10000); // 10秒
-}
-
-// 停止语音识别
-function stopSpeechRecognition() {
-  recognition.stop();
-
-  // 启用开始按钮，禁用停止按钮
-  startButton.disabled = false;
-  stopButton.disabled = true;
-}
   </script>
 </head>
 <body>
@@ -256,24 +212,21 @@ n位的数字：\d{n}
 由数字、26个英文字母或者下划线组成的字符串：\w+ 或 \w{3,20}
 由纯网址组成的字符串：https?:\/\/[^\s/$.?#].[^\s]*"></textarea>
   <div class="search-container">
-    <select id="searchEngine">
+   <select id="searchEngine">
     <option value="https://pic.sogou.com/pics?query=">sogou.com</option>
     <option value="https://s.weibo.com/weibo?q=">weibo.com</option>
-    <option value="https://github.com/search?q=" >github.com</option>
-    <option value="https://www.google.com/search?q=" >google.com</option>
-    <option value="https://pic.sogou.com/pics?query=">pic.sogou.com</option>
+    <option value="https://github.com/search?q=">github.com</option>
+    <option value="https://www.google.com/search?q=">google.com</option>
     <option value="https://www.youtube.com/results?search_query=">youtube.com</option>
+    <option value="https://pic.sogou.com/pics?query=">pic.sogou.com</option>
+    <option value="https://github.com/feeday/feeday.github.io/issues?q=" selected="selected">feeday.github.io</option>
     <option value="https://www.baidu.com/s?q2=">www.baidu.com</option>
     <option value="https://tieba.baidu.com/f/search/res?ie=utf-8&amp;qw=">tieba.baidu.com</option>
     <option value="https://search.bilibili.com/all?keyword=">www.bilibili.com</option>
     <option value="https://www.douyin.com/search/">www.douyin.com</option>
-    <option value="https://github.com/feeday/feeday.github.io/issues?q="selected>feeday.github.io</option>
-    </select>
-    <input type="text" id="searchInput" placeholder="feeday.github.io" onfocus="if (document.getElementById('searchEngine').value === 'https://github.com/feeday/feeday.github.io/issues?q=') this.placeholder = 'feeday.github.io'; else this.placeholder = '';">
-    <button class="button" onclick="search()">搜索</button>
-    <button class="button" onclick="document.getElementById(&#39;searchInput&#39;).value = &#39;&#39;;">清空</button>
-    <button id="startButton" class="button" onclick="startSpeechRecognition()">语音输入</button>
-    <button id="stopButton" class="button" onclick="stopSpeechRecognition()">停止输入</button>
+
+  </select>
+  <input type="text" id="searchInput" placeholder="feeday.github.io" onfocus="this.placeholder = 'feeday.github.io';" onkeydown="searchRedirect(event)">
   </div>
 	<div style="height: 10px;"></div>
 
