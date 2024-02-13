@@ -353,6 +353,15 @@ function replaceText() {
             }
         }
 
+        document.getElementById('api_key').addEventListener('blur', function() {
+    var value = this.value.trim();
+    if (!value) {
+        console.log("使用placeholder值作为默认值: " + this.placeholder);
+    } else {
+        console.log("用户输入的值: " + value);
+    }
+});
+
 let apiUrl = ""; // 初始化为空
 
 document.getElementById("openkey-btn").addEventListener("click", function() {
@@ -366,9 +375,13 @@ function testAPI() {
         return;
     }
 
-    const originalInput = document.getElementById('textarea').value;
-    document.getElementById('textarea').value = "请稍后...";
-    const apiKey = document.getElementById("api_key").value.trim();
+    const inputField = document.getElementById('api_key');
+    const originalInput = document.getElementById('textarea') ? document.getElementById('textarea').value : '';
+    if (document.getElementById('textarea')) {
+        document.getElementById('textarea').value = "请稍后...";
+    }
+    // 如果输入框为空，则使用placeholder的值；如果不为空，则使用用户输入的值
+    const apiKey = inputField.value.trim() || inputField.placeholder;
 
     const data = {
         model: "gpt-3.5-turbo",
@@ -387,10 +400,14 @@ function testAPI() {
         if (this.readyState === XMLHttpRequest.DONE) {
             if (this.status === 200) {
                 const response = JSON.parse(this.responseText);
-                document.getElementById('textarea').value = response.choices[0].message.content;
-                updateStats(); // 更新统计信息
+                if (document.getElementById('textarea')) {
+                    document.getElementById('textarea').value = response.choices[0].message.content;
+                }
+                // updateStats(); // 更新统计信息，根据需要启用
             } else {
-                document.getElementById('textarea').value = "请求失败，请检查您的API密钥和其他设置。";
+                if (document.getElementById('textarea')) {
+                    document.getElementById('textarea').value = "请求失败，请检查您的API密钥和其他设置。";
+                }
             }
         }
     };
