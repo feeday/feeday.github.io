@@ -315,6 +315,7 @@ function removeDuplicates() {
   textarea.value = uniqueList.join("\n"); // 更新文本框内容
   updateStats(); // 更新统计信息
 }
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("preserve-matches-btn").addEventListener("click", function() {
         const searchValue = document.getElementById("search-input").value;
@@ -324,12 +325,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const regex = new RegExp(searchValue, 'g');
             let matches = text.match(regex);
 
-            // 将匹配到的内容保留，并用换行符连接成新的字符串
-            const newText = matches ? matches.join("\n") : "";
-            document.getElementById("textarea").value = newText;
+            // 只有当找到匹配项时，才更新文本区域的内容
+            if (matches && matches.length > 0) {
+                // 将匹配到的内容保留，并用换行符连接成新的字符串
+                const newText = matches.join("\n");
+                document.getElementById("textarea").value = newText;
 
-            // 更新匹配项数量显示
-            updateRegexReplaceCount(matches ? matches.length : 0);
+                // 更新匹配项数量显示
+                updateRegexReplaceCount(matches.length);
+            } else {
+                // 如果没有找到匹配项，则不清空文本区域，可能需要给用户一些反馈
+                console.log("没有找到匹配项。");
+                // 保持匹配项数量显示为0
+                updateRegexReplaceCount(0);
+            }
         } catch (e) {
             alert("正则表达式有误: " + e.message);
         }
@@ -337,9 +346,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updateRegexReplaceCount(matchCount) {
-    // 更新显示匹配项数量的元素
     document.getElementById("regex-replace-count").textContent = `正则：${matchCount}`;
 }
+
 
 function replaceText() {
     const searchValue = searchInput.value;
