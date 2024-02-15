@@ -327,14 +327,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 将匹配到的内容保留，并用换行符连接成新的字符串
             const newText = matches ? matches.join("\n") : "";
-
             document.getElementById("textarea").value = newText;
-		  updateStats();
+
+            // 更新匹配项数量显示
+            updateRegexReplaceCount(matches ? matches.length : 0);
         } catch (e) {
             alert("正则表达式有误: " + e.message);
         }
     });
 });
+
+function updateRegexReplaceCount(matchCount) {
+    // 更新显示匹配项数量的元素
+    document.getElementById("regex-replace-count").textContent = `正则：${matchCount}`;
+}
 
 function replaceText() {
     const searchValue = searchInput.value;
