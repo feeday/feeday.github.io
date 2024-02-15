@@ -329,6 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const newText = matches ? matches.join("\n") : "";
 
             document.getElementById("textarea").value = newText;
+		  updateStats();
         } catch (e) {
             alert("正则表达式有误: " + e.message);
         }
