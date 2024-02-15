@@ -230,13 +230,14 @@ n位的数字：\d{n}
   </div>
 	<div style="height: 10px;"></div>
 <div class="input-group">
-<input id="search-input" style="width: 25%;" placeholder="输入要查找的文本">
+<input id="search-input" style="width: 25%;" placeholder="输入要查找的文本" value="https?:\/\/[^\s/$.?#].[^\s]*">
 <input id="replace-input" style="width: 25%;" placeholder="输入要替换的文本">
 <input type="text" class="form-control mx-3" id="api_key" name="api_key" style="width: 49%;" placeholder="sk-WJSOiA6ITvbPUg3S8bC23dB91bEc40AdB8E6E7366dEe7f92">
 </div>
 <div class="input-group">
 <button class="button" id="remove-duplicates-btn" style="background-color: #007bff; color: white;">去重</button>
 <button class="button" id="replace-btn" style="background-color: #007bff; color: white;">替换</button>
+<button class="button" id="preserve-matches-btn" style="background-color: #A52A2A; color: white;">保留</button>
 <button class="button" id="regex-replace-btn" style="background-color: #A52A2A; color: white;">正则</button>
 <button class="button" id="copy-btn" style="background-color: #FFA500; color: white;">复制</button>
 <button class="button" id="paste-btn" style="background-color: #FF4500; color: white;">粘贴</button>
@@ -244,8 +245,7 @@ n位的数字：\d{n}
 <button onclick="formatAndPreview()"  style="background-color: #511a1a; color: white;">网页</button>
 <button class="button" style="background-color: purple; color: white;"  id="openkey-btn" data-api-url="https://openkey.cloud/v1/chat/completions">测试密钥</button>
 <a href="https://openkey.cloud/token" target="_blank"><button class="button">国内密钥</button></a>
-<a href="https://feeday.github.io/gpt/"><button class="button">文字提问</button></a>
-<a href="https://ttsmaker.com/zh-cn" arget="_blank"><button class="button">文转语音</button></a>
+<a href="https://feeday.github.io/gpt/" target="_blank"><button class="button">文字提问</button></a>
 <a href="https://chat.openai.com/" target="_blank"><button class="button">高级提问</button></a>
 <a href="https://platform.openai.com/account/api-keys" target="_blank"><button class="button">官方密钥</button></a>
 <a href="https://feeday.github.io/page/mtp/"  target="_blank"><button class="button">视频取图</button></a>
@@ -316,6 +316,24 @@ function removeDuplicates() {
   textarea.value = uniqueList.join("\n"); // 更新文本框内容
   updateStats(); // 更新统计信息
 }
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById("preserve-matches-btn").addEventListener("click", function() {
+        const searchValue = document.getElementById("search-input").value;
+        const text = document.getElementById("textarea").value;
+        
+        try {
+            const regex = new RegExp(searchValue, 'g');
+            let matches = text.match(regex);
+
+            // 将匹配到的内容保留，并用换行符连接成新的字符串
+            const newText = matches ? matches.join("\n") : "";
+
+            document.getElementById("textarea").value = newText;
+        } catch (e) {
+            alert("正则表达式有误: " + e.message);
+        }
+    });
+});
 
 function replaceText() {
     const searchValue = searchInput.value;
