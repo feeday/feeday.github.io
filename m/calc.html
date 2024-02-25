@@ -66,7 +66,7 @@
 </head>
 <body>
     <div class="container">
-        <input type="number" id="principal" value="5000000" placeholder="请输入存款金额">
+        <input type="number" id="principal" value="5000000" placeholder="请输入金额">
         <input type="number" id="rate" value="1.15" placeholder="请输入年化利率 (%)">
     <div align="center">
       <button class="button" onclick="startCalculation()">开始计算</button>
@@ -103,7 +103,7 @@
 
         intervalId = setInterval(() => {
             totalAmount += perSecondInterest;
-            document.getElementById("totalAmount").value = `总收益: ${totalAmount.toFixed(6)}`;
+            document.getElementById("totalAmount").value = `年化率总收益: ${totalAmount.toFixed(6)}`;
             updateEarnings(perSecondInterest);
 
             let increaseAmount = totalAmount - lastAmountForSound;
