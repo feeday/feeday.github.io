@@ -3,51 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>收益计算器</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            text-align: center;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-radius: 10px;
-            margin-top: 50px;
-        }
-        input, button {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            display: block;
-        }
-        button {
-            color: #fff;
-            cursor: pointer;
-            background-color: #28a745; /* Start button */
-        }
-        button.stop-button {
-            background-color: #dc3545; /* Stop button */
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+ <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 20px;
+        text-align: center;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        margin: 10px;
+    }
+
+    input, .button {
+        display: block;
+        margin: 10px auto;
+        padding: 10px;
+        width: 80%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+        transition: background-color 0.3s ease; /* Smooth transition for background color */
+    }
+
+    .button:hover {
+        background-color: #0056b3; /* Darker shade for hover effect */
+    }
+
+    .button.stop-button {
+        background-color: #dc3545; /* Stop button */
+    }
+
+    .button.stop-button:hover {
+        background-color: #c82333; /* Slightly darker shade for stop button hover effect */
+    }
+
+    .hidden {
+        display: none;
+    }
+
+
+
+</style>
+
 </head>
 <body>
     <div class="container">
         <input type="number" id="principal" value="10000" placeholder="请输入存款金额">
         <input type="number" id="rate" value="1.903" placeholder="请输入年化利率 (%)">
-        <button class="start-button" onclick="startCalculation()">开始计算</button>
-        <button class="stop-button" onclick="stopCalculation()">结束计算</button>
+    <div align="center">
+      <button class="button" onclick="startCalculation()">开始计算</button>
+        <button class="button" onclick="stopCalculation()">结束计算</button>
+</div>
+
+    
         <input class="result hidden" id="totalAmount" value="总收益: 0" readonly>
         <input class="earnings-input hidden" id="perHourEarnings" readonly>
         <input class="earnings-input hidden" id="perDayEarnings" readonly>
@@ -124,6 +148,6 @@
         lastAmountForSound = totalAmount; // 重置音效播放的基准金额
     }
 </script>
-
+ <p style="text-align:center;"> 	<a href="https://feeday.github.io/" ><img class="img" src="https://tool.lu/netcard/" width="100%"  alt=""/></a></p>
 </body>
 </html>
