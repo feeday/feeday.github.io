@@ -103,7 +103,7 @@
 
         intervalId = setInterval(() => {
             totalAmount += perSecondInterest;
-            document.getElementById("totalAmount").value = `年化率总收益: ${totalAmount.toFixed(6)}`;
+            document.getElementById("totalAmount").value = `实时算总收益: ${totalAmount.toFixed(6)}`;
             updateEarnings(perSecondInterest);
 
             let increaseAmount = totalAmount - lastAmountForSound;
