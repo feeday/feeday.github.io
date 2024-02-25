@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>收益计算器</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            display: block;
+        }
+        button {
+            color: #fff;
+            cursor: pointer;
+            background-color: #28a745; /* Start button */
+        }
+        button.stop-button {
+            background-color: #dc3545; /* Stop button */
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="number" id="principal" value="10000" placeholder="请输入存款金额">
+        <input type="number" id="rate" value="1.903" placeholder="请输入年化利率 (%)">
+        <button class="start-button" onclick="startCalculation()">开始计算</button>
+        <button class="stop-button" onclick="stopCalculation()">结束计算</button>
+        <input class="result hidden" id="totalAmount" value="总收益: 0" readonly>
+        <input class="earnings-input hidden" id="perHourEarnings" readonly>
+        <input class="earnings-input hidden" id="perDayEarnings" readonly>
+        <input class="earnings-input hidden" id="perMonthEarnings" readonly>
+        <input class="earnings-input hidden" id="perYearEarnings" readonly>
+    </div>
+    <audio id="coinSound" src="rmb.wav"></audio>
+    <audio id="bigWinSound" src="rmb2.wav"></audio>
+
+
+ <script>
+    let intervalId = null;
+    let lastAmountForSound = 0; // 用于追踪何时播放音效的金额标记
+    let totalAmount = 0; // 初始化总收益
+
+    function startCalculation() {
+        document.querySelectorAll('.hidden').forEach(element => {
+            element.classList.remove('hidden');
+        });
+
+        clearInterval(intervalId); // 无需检查null，直接清除即可
+        const principal = parseFloat(document.getElementById("principal").value);
+        const rate = parseFloat(document.getElementById("rate").value);
+        totalAmount = principal;
+        lastAmountForSound = totalAmount; // 重置，确保从当前本金开始计算增加额度
+        const perSecondInterest = (principal * (rate / 100) / 365 / 24 / 60 / 60);
+
+        intervalId = setInterval(() => {
+            totalAmount += perSecondInterest;
+            document.getElementById("totalAmount").value = `总收益: ${totalAmount.toFixed(6)}`;
+            updateEarnings(perSecondInterest);
+
+            let increaseAmount = totalAmount - lastAmountForSound;
+            // 根据增加额度决定播放哪个音效
+            if (increaseAmount >= 10) { // 优先检查大额度增加
+                playSound("bigWinSound");
+                lastAmountForSound = totalAmount;
+            } else if (increaseAmount >= 1) {
+                playSound("coinSound");
+                lastAmountForSound = totalAmount;
+            }
+        }, 1000);
+    }
+
+    function updateEarnings(perSecondInterest) {
+        const perMinute = perSecondInterest * 60;
+        const perHour = perMinute * 60;
+        const perDay = perHour * 24;
+        const perMonth = perDay * 30;
+        const perYear = perDay * 365;
+
+
+        document.getElementById("perHourEarnings").value = `每小时收益: ${perHour.toFixed(2)}`;
+        document.getElementById("perDayEarnings").value = `每天收益: ${perDay.toFixed(2)}`;
+        document.getElementById("perMonthEarnings").value = `每月收益: ${perMonth.toFixed(2)}`;
+        document.getElementById("perYearEarnings").value = `每年收益: ${perYear.toFixed(2)}`;
+    }
+
+    function playSound(soundId) {
+        const sound = document.getElementById(soundId);
+        if (sound) {
+            sound.pause(); // 停止当前播放
+            sound.currentTime = 0; // 重置音频文件到开始
+            sound.play().catch(error => console.error("Audio play failed", error));
+        }
+    }
+
+    function stopCalculation() {
+        clearInterval(intervalId); // 清除计时器
+        intervalId = null; // 显式地将intervalId设置为null
+        document.querySelectorAll('.earnings-input, .result').forEach(element => {
+            element.classList.add('hidden');
+        });
+        lastAmountForSound = totalAmount; // 重置音效播放的基准金额
+    }
+</script>
+
+</body>
+</html>
