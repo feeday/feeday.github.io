@@ -42,27 +42,14 @@
             <input type="text" class="form-control" id="api_key" name="api_key" placeholder="sk-2BVsToASdk3FVR9UEf3559A954174a0395B2Fb2c7eDcBdB2" style="display:none;">  
         </div>
         <div class="input-group">
-            <!-- GPT-3.5 Turbo 按钮 -->
             <button class="button" id="gpt-35-btn" data-api-url="https://openkey.cloud/v1/chat/completions" data-model="gpt-3.5-turbo">turbo-3</button>
-            <!-- 复制并清空按钮 -->
-            <button id="copy-clear-btn" class="button">copy-clear</button>
-            <!-- GPT-4 Turbo Preview 按钮 -->
             <button class="button" id="gpt-4-btn" data-api-url="https://openkey.cloud/v1/chat/completions" data-model="gpt-4-turbo-preview">preview-4</button>
         </div>
         
         <script>
         document.addEventListener("DOMContentLoaded", function() {
             const textarea = document.getElementById("textarea");
-        
-            // 复制并清空textarea的内容
-            document.getElementById("copy-clear-btn").addEventListener("click", function() {
-                navigator.clipboard.writeText(textarea.value).then(() => {
-                    textarea.value = ""; // 清空textarea的内容
-                }).catch(err => {
-                    console.error('复制失败', err);
-                });
-            });
-        
+      
             // GPT3 和 GPT4 提问按钮的逻辑
             document.querySelectorAll(".button").forEach(button => {
                 if (button.id === "gpt-35-btn" || button.id === "gpt-4-btn") {
