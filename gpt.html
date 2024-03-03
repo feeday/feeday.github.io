@@ -43,12 +43,17 @@
         </div>
         <div class="input-group">
             <button class="button" id="gpt-35-btn" data-api-url="https://openkey.cloud/v1/chat/completions" data-model="gpt-3.5-turbo">turbo-3</button>
+            <button class="button" id="clear-btn">clear</button>
             <button class="button" id="gpt-4-btn" data-api-url="https://openkey.cloud/v1/chat/completions" data-model="gpt-4-turbo-preview">preview-4</button>
         </div>
         
         <script>
         document.addEventListener("DOMContentLoaded", function() {
             const textarea = document.getElementById("textarea");
+
+            document.getElementById('clear-btn').addEventListener('click', function() {
+    document.getElementById('textarea').value = ''; // 直接清空<textarea>的内容
+});
       
             // GPT3 和 GPT4 提问按钮的逻辑
             document.querySelectorAll(".button").forEach(button => {
