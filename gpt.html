@@ -712,7 +712,7 @@ to{transform:translate(-50%,-18px);opacity:1}
 								<path d="m18,7l-4,0a2,2 0 0 1 -2,-2l0,-1a1,1 0 0 1 1,-1l6,0a1,1 0 0 1 1,1l0,1a2,2 0 0 1 -2,2zm-4,-2l0,0z" />
 							</svg>
 						</div>
-						<select @change="changePageScaling(true)" class="dropdown minibtn minibtn-default btnzoom-b" v-model="selectedPageScaling" :class="{ 'orangereddropdown': !(pageScaling === '0.8' || pageScaling === '0.80') }" :style="{ marginRight: settingsLanguage == 'cn' ? '-4px' : '-7px', width: settingsLanguage == 'cn' ? '64px' : '90px' }" :title="settingsLanguage == 'cn' ? '更改页面缩放比例 (移动端)' : 'Change Page Scaling (Mobile)'">
+						<select @change="changePageScaling(true)" class="dropdown minibtn minibtn-default btnzoom-b" v-model="selectedPageScaling" :class="{ 'orangereddropdown': !(pageScaling === '1.0' || pageScaling === '1.0') }" :style="{ marginRight: settingsLanguage == 'cn' ? '-4px' : '-7px', width: settingsLanguage == 'cn' ? '64px' : '90px' }" :title="settingsLanguage == 'cn' ? '更改页面缩放比例 (移动端)' : 'Change Page Scaling (Mobile)'">
 							<option disabled value="">{{ settingsLanguage == 'cn' ? '页面缩放' : 'Page Scaling' }}</option>
 							<option disabled value="help1">{{ settingsLanguage == 'cn' ? ' - 当前缩放为 ' + (parseFloat(this.pageScaling) * 100).toFixed(0) + '%，默认的缩放设置是 80%' : ' - Current scaling is ' + (parseFloat(this.pageScaling) * 100).toFixed(0) + '%, and default scaling is 80%'  }}</option>
 							<option disabled value="help2">{{ settingsLanguage == 'cn' ? ' - 仅支持移动设备，电脑端不会进行缩放' : ' - Only mobile devices are supported, and there will be no scaling on desktop' }}</option>
@@ -1762,14 +1762,14 @@ to{transform:translate(-50%,-18px);opacity:1}
 				// 可修改 Editable - 第三方平台、反代 的API网址可加入到下面的apiURLOptions_cn 、apiURLOptions_en 中
 				apiURLOptions_cn: [
 				  { label: '官方  • OpenAI官方API (GPT-3.5 / GPT-4) 需魔法', url: 'https://api.openai.com/v1/chat/completions' },
-				  { label: '第三方  • 免魔法 使用官方Key openai-proxy.com', url: 'https://api.openai-proxy.com/v1/chat/completions' }
+				  { label: '第三方  • 免魔法 openkey.cloud', url: 'https://openkey.cloud/v1/chat/completions' }
 				],
 				apiURLOptions_en: [ //可修改 Editable
 				  { label: "OpenAI  • OpenAI's official API. GPT-3.5 / GPT-4 API endpoint.", url: 'https://api.openai.com/v1/chat/completions' },
-				  { label: '3rd party  • Unofficial. No VPN required, use OpenAI API Key', url: 'https://api.openai-proxy.com/v1/chat/completions' }
+				  { label: '3rd party  • Unofficial. No VPN required, use OpenAI API Key', url: 'https://openkey.cloud/v1/chat/completions' }
 				],
 				OpenAI_API_URL: 'https://api.openai.com/v1/chat/completions', //不要改 固定常量 
-				OpenaiProxyCom_API_URL: 'https://api.openai-proxy.com/v1/chat/completions', //不要改 固定常量
+				OpenaiProxyCom_API_URL: 'https://openkey.cloud/v1/chat/completions', //不要改 固定常量
 				
 				// 8.11 收集自网络的还算靠谱第三方付费API，仅在语言为中文时显示。 Part of the third-party paid APIs collected from the Internet will only be displayed when the language is set to Chinese.
 				// search for >> display: settingsLanguage == 'cn' ? 'block' : 'none'
