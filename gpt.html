@@ -34,45 +34,45 @@
     </head>
     <body>
     
-        <textarea id="textarea" placeholder="请输入您的问题"></textarea>
+        <textarea id="textarea" placeholder="仅供测试手下留情谢谢"></textarea>
         <div class="search-container"></div>
         <div class="input-group">
-          <!-- 隐藏的 API 密钥输入框 -->
-          <input type="text" class="form-control" id="api_key" name="api_key" placeholder="sk-2BVsToASdk3FVR9UEf3559A954174a0395B2Fb2c7eDcBdB2" style="display:none;">
+                      <!-- style="display:none;" -->
+          <input type="text" class="form-control" id="api_key" name="api_key" placeholder="sk-2BVsToASdk3FVR9UEf3559A954174a0395B2Fb2c7eDcBdB2" >  
         </div>
         <div class="input-group">
           <!-- GPT-3.5 Turbo 按钮 -->
-          <button class="button" id="gpt-35-btn" data-api-url="https://openkey.cloud/v1/chat/completions" data-model="gpt-3.5-turbo">GPT-3</button>
+          <button class="button" id="gpt-35-btn" data-api-url="https://openkey.cloud/v1/chat/completions" data-model="gpt-3.5-turbo">GPT3</button>
           <!-- GPT-4 Turbo Preview 按钮 -->
-          <button class="button" id="gpt-4-btn" data-api-url="https://openkey.cloud/v1/chat/completions" data-model="gpt-4-turbo-preview">GPT-4</button>
+          <button class="button" id="gpt-4-btn" data-api-url="https://openkey.cloud/v1/chat/completions" data-model="gpt-4-turbo-preview">GPT4</button>
         </div>
         
         <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const textarea = document.getElementById("textarea");
-            const apiKeyInput = document.getElementById('api_key');
-        
-            // 为两个按钮添加点击事件监听
-            document.getElementById("gpt-35-btn").addEventListener("click", function() {
-                testAPI(this.dataset.model); // 传入对应的模型标识符
-            });
-        
-            document.getElementById("gpt-4-btn").addEventListener("click", function() {
-                testAPI(this.dataset.model); // 传入对应的模型标识符
-            });
-        
-            function testAPI(model) {
-                const apiUrl = "https://openkey.cloud/v1/chat/completions";
-                navigator.clipboard.readText().then(apiKey => {
+            document.addEventListener("DOMContentLoaded", function() {
+                const textarea = document.getElementById("textarea");
+                const apiKeyInput = document.getElementById('api_key');
+            
+                document.getElementById("gpt-35-btn").addEventListener("click", function() {
+                    testAPI(this.dataset.model); // 传入对应的模型标识符
+                });
+            
+                document.getElementById("gpt-4-btn").addEventListener("click", function() {
+                    testAPI(this.dataset.model); // 传入对应的模型标识符
+                });
+            
+                function testAPI(model) {
+                    const apiUrl = "https://openkey.cloud/v1/chat/completions";
+                    // 如果input有值则使用该值，否则使用placeholder值
+                    const apiKey = apiKeyInput.value.trim() || apiKeyInput.placeholder;
                     if (!apiKey) {
-                        alert("剪贴板中未检测到API密钥");
+                        alert("API密钥是必须的");
                         return;
                     }
-                    apiKeyInput.value = apiKey; // 设置API密钥输入框的值
-                    const originalInput = textarea.value || '请输入一些文本...';
-        
+            
+                    const originalInput = textarea.value.trim() || '请输入一些文本...';
+            
                     textarea.value = "请稍后...";
-        
+            
                     const data = {
                         model: model,
                         messages: [
@@ -80,7 +80,7 @@
                             { role: "user", content: originalInput }
                         ]
                     };
-        
+            
                     fetch(apiUrl, {
                         method: "POST",
                         headers: {
@@ -97,9 +97,6 @@
                         textarea.value = "请求失败，请检查您的API密钥和其他设置。";
                         console.error("Error:", error);
                     });
-                }).catch(err => {
-                    console.error('Failed to read clipboard contents: ', err);
-                });
-            } 
-        });
-        </script>
+                } 
+            });
+            </script>
