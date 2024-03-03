@@ -3,139 +3,102 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <head>
     <style>
-        body {
-          font-family: 'Arial', sans-serif;
-          margin: 0;
-          padding: 20px;
-          background-color: #f7f7f7;
-        }
-      
-        .input-group {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 10px;
-        }
-      
         #textarea {
-          flex: 1;
-          height: 100px;
-          margin-right: 10px;
-          padding: 10px;
-          border-radius: 4px;
-          border: 1px solid #ccc;
-          font-size: 16px;
+            width: 80%;
+            max-width: 100%;
+            box-sizing: border-box; /* 确保宽度包括padding和border */
+            padding: 10px; /* 根据需要调整 */
+            border: 1px solid #ccc; /* 根据需要调整 */
+            border-radius: 5px; /* 根据需要调整 */
+            resize: none; /* 禁止用户调整大小 */
+            margin: 0 auto; /* 居中 */
+            display: block; /* 使其成为块级元素，从而可以居中 */
         }
-      
-        #api_key {
-          flex: 1;
-          padding: 10px;
-          border-radius: 4px;
-          border: 1px solid #ccc;
-          font-size: 16px;
-          display: none; /* 隐藏API密钥输入框 */
-        }
-      
-        .button {
-          padding: 10px 20px;
-          font-size: 16px;
-          border-radius: 4px;
-          border: none;
-          color: white;
-          background: linear-gradient(to right, #0062E6, #33AEFF);
-          cursor: pointer;
-        }
-      
-        .button:hover {
-          background: linear-gradient(to right, #0052D4, #65C7F7);
-        }
-      
-        .result-container {
-          background-color: #fff;
-          padding: 20px;
-          border-radius: 4px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-      
-        @media (max-width: 600px) {
-          .input-group {
-            flex-direction: column;
-            align-items: stretch;
-          }
-      
-          #textarea {
-            margin-right: 0;
-            margin-bottom: 10px;
-          }
-      
-          .button {
-            width: 100%;
-          }
-        }
-      </style>
+        .input-group {
+        text-align: center; /* 将内部元素居中 */
+    }
+
+    .button {
+        /* 添加您想要的按钮样式 */
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        background-color: #5fe58d;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    </style>
+    
     </head>
     <body>
     
         <textarea id="textarea" placeholder="请输入您的问题"></textarea>
         <div class="search-container"></div>
         <div class="input-group">
+          <!-- 隐藏的 API 密钥输入框 -->
           <input type="text" class="form-control" id="api_key" name="api_key" placeholder="sk-" style="display:none;">
         </div>
         <div class="input-group">
-          <button class="button" id="openkey-btn" data-api-url="https://openkey.cloud/v1/chat/completions">高级提问</button>
+          <!-- GPT-3.5 Turbo 按钮 -->
+          <button class="button" id="gpt-35-btn" data-api-url="https://openkey.cloud/v1/chat/completions" data-model="gpt-3.5-turbo">GPT-3</button>
+          <!-- GPT-4 Turbo Preview 按钮 -->
+          <button class="button" id="gpt-4-btn" data-api-url="https://openkey.cloud/v1/chat/completions" data-model="gpt-4-turbo-preview">GPT-4</button>
         </div>
         
         <script>
         document.addEventListener("DOMContentLoaded", function() {
             const textarea = document.getElementById("textarea");
             const apiKeyInput = document.getElementById('api_key');
-            const openKeyBtn = document.getElementById("openkey-btn");
         
-            openKeyBtn.addEventListener("click", function() {
-                navigator.clipboard.readText().then(text => {
-                    apiKeyInput.value = text; // 将剪贴板的内容设置为api_key输入框的值
-                    testAPI(text); // 调用API测试函数，传入剪贴板内容
-                }).catch(err => {
-                    console.error('Failed to read clipboard contents: ', err);
-                });
+            // 为两个按钮添加点击事件监听
+            document.getElementById("gpt-35-btn").addEventListener("click", function() {
+                testAPI(this.dataset.model); // 传入对应的模型标识符
             });
         
-            function testAPI(apiKey) {
-                const apiUrl = openKeyBtn.getAttribute("data-api-url");
-                if (!apiUrl) {
-                    alert("请选择一个API URL");
-                    return;
-                }
+            document.getElementById("gpt-4-btn").addEventListener("click", function() {
+                testAPI(this.dataset.model); // 传入对应的模型标识符
+            });
         
-                const originalInput = textarea.value || '请输入一些文本...';
+            function testAPI(model) {
+                const apiUrl = "https://openkey.cloud/v1/chat/completions";
+                navigator.clipboard.readText().then(apiKey => {
+                    if (!apiKey) {
+                        alert("剪贴板中未检测到API密钥");
+                        return;
+                    }
+                    apiKeyInput.value = apiKey; // 设置API密钥输入框的值
+                    const originalInput = textarea.value || '请输入一些文本...';
         
-                textarea.value = "请稍后...";
+                    textarea.value = "请稍后...";
         
-                const data = {
-                    model: "gpt-3.5-turbo",
-                    messages: [
-                        { role: "system", content: "You are a helpful assistant." },
-                        { role: "user", content: originalInput }
-                    ]
-                };
+                    const data = {
+                        model: model,
+                        messages: [
+                            { role: "system", content: "You are a helpful assistant." },
+                            { role: "user", content: originalInput }
+                        ]
+                    };
         
-                fetch(apiUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${apiKey}`
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(response => {
-                    textarea.value = response.choices[0].message.content;
-                })
-                .catch(error => {
-                    textarea.value = "请求失败，请检查您的API密钥和其他设置。";
-                    console.error("Error:", error);
+                    fetch(apiUrl, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(response => {
+                        textarea.value = response.choices[0].message.content;
+                    })
+                    .catch(error => {
+                        textarea.value = "请求失败，请检查您的API密钥和其他设置。";
+                        console.error("Error:", error);
+                    });
+                }).catch(err => {
+                    console.error('Failed to read clipboard contents: ', err);
                 });
             } 
         });
         </script>
-
