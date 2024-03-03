@@ -57,7 +57,6 @@
             // 复制并清空textarea的内容
             document.getElementById("copy-clear-btn").addEventListener("click", function() {
                 navigator.clipboard.writeText(textarea.value).then(() => {
-                    alert("内容已复制到剪贴板！");
                     textarea.value = ""; // 清空textarea的内容
                 }).catch(err => {
                     console.error('复制失败', err);
