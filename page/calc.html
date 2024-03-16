@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>─=≡Σ((( つ•̀ω•́)つ</title> 
+
+ <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 20px;
+        text-align: center;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        margin: 10px;
+    }
+
+    input, .button {
+        display: block;
+        margin: 10px auto;
+        padding: 10px;
+        width: 80%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+        transition: background-color 0.3s ease; /* Smooth transition for background color */
+    }
+
+    .button:hover {
+        background-color: #0056b3; /* Darker shade for hover effect */
+    }
+
+    .button.stop-button {
+        background-color: #dc3545; /* Stop button */
+    }
+
+    .button.stop-button:hover {
+        background-color: #c82333; /* Slightly darker shade for stop button hover effect */
+    }
+
+    .hidden {
+        display: none;
+    }
+
+
+
+</style>
+   <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 20px;
+            text-align: center;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+        }
+
+        #loan-form label,
+        #loan-form input,
+        select {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #loan-form button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #loan-form button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px auto;
+        }
+
+        #loan-form button:hover {
+            background-color: #0056b3;
+            color: #ffffff;
+        }
+
+        #loan-form input:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f4f4f4;
+            box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .result p:first-child {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="number" id="principal" value="5000000" placeholder="请输入金额">
+        <input type="number" id="rate" value="1.15" placeholder="请输入年化利率 (%)">
+    <div align="center">
+      <button class="button" onclick="startCalculation()">开始计算</button>
+        <button class="button" onclick="stopCalculation()">结束计算</button>
+</div>
+
+    
+        <input class="result hidden" id="totalAmount" value="总收益: 0" readonly>
+        <input class="earnings-input hidden" id="perHourEarnings" readonly>
+        <input class="earnings-input hidden" id="perDayEarnings" readonly>
+        <input class="earnings-input hidden" id="perMonthEarnings" readonly>
+        <input class="earnings-input hidden" id="perYearEarnings" readonly>
+    </div>
+    <audio id="coinSound" src="rmb.wav"></audio>
+    <audio id="bigWinSound" src="rmb2.wav"></audio>
+
+
+ <script>
+    let intervalId = null;
+    let lastAmountForSound = 0; // 用于追踪何时播放音效的金额标记
+    let totalAmount = 0; // 初始化总收益
+
+    function startCalculation() {
+        document.querySelectorAll('.hidden').forEach(element => {
+            element.classList.remove('hidden');
+        });
+
+        clearInterval(intervalId); // 无需检查null，直接清除即可
+        const principal = parseFloat(document.getElementById("principal").value);
+        const rate = parseFloat(document.getElementById("rate").value);
+        totalAmount = principal;
+        lastAmountForSound = totalAmount; // 重置，确保从当前本金开始计算增加额度
+        const perSecondInterest = (principal * (rate / 100) / 365 / 24 / 60 / 60);
+
+        intervalId = setInterval(() => {
+            totalAmount += perSecondInterest;
+            document.getElementById("totalAmount").value = `总收益: ${totalAmount.toFixed(6)}`;
+            updateEarnings(perSecondInterest);
+
+            let increaseAmount = totalAmount - lastAmountForSound;
+            // 根据增加额度决定播放哪个音效
+            if (increaseAmount >= 10) { // 优先检查大额度增加
+                playSound("bigWinSound");
+                lastAmountForSound = totalAmount;
+            } else if (increaseAmount >= 1) {
+                playSound("coinSound");
+                lastAmountForSound = totalAmount;
+            }
+        }, 1000);
+    }
+
+    function updateEarnings(perSecondInterest) {
+        const perMinute = perSecondInterest * 60;
+        const perHour = perMinute * 60;
+        const perDay = perHour * 24;
+        const perMonth = perDay * 30;
+        const perYear = perDay * 365;
+
+
+        document.getElementById("perHourEarnings").value = `每小时收益: ${perHour.toFixed(2)}`;
+        document.getElementById("perDayEarnings").value = `每天收益: ${perDay.toFixed(2)}`;
+        document.getElementById("perMonthEarnings").value = `每月收益: ${perMonth.toFixed(2)}`;
+        document.getElementById("perYearEarnings").value = `每年收益: ${perYear.toFixed(2)}`;
+    }
+
+    function playSound(soundId) {
+        const sound = document.getElementById(soundId);
+        if (sound) {
+            sound.pause(); // 停止当前播放
+            sound.currentTime = 0; // 重置音频文件到开始
+            sound.play().catch(error => console.error("Audio play failed", error));
+        }
+    }
+
+    function stopCalculation() {
+        clearInterval(intervalId); // 清除计时器
+        intervalId = null; // 显式地将intervalId设置为null
+        document.querySelectorAll('.earnings-input, .result').forEach(element => {
+            element.classList.add('hidden');
+        });
+        lastAmountForSound = totalAmount; // 重置音效播放的基准金额
+    }
+</script>
+ <div style="text-align:center;">  <div style="height:1px;"></div>  
+
+   <div class="container">
+        <form id="loan-form">
+            <label for="amount">金额 (万元):</label>
+            <input type="number" id="amount" placeholder="金额（万元）" step="1" value="300">
+
+            <label for="interest">年利率(%):</label>
+            <input type="number" id="interest" placeholder="年利率" step="0.01" value="0.2" required>
+
+
+            <label for="months">(月/年): (存款/贷款)</label>
+            <select id="months" required>
+                <option value="1">1 月 整存整取</option>
+                <option value="3">3 月 整存整取</option>
+                <option value="6">6 月 整存整取</option>
+                <option value="12">12 月 整存整取</option>
+                <option value="24">24 月 整存整取</option>
+                <option value="36">36 月 整存整取</option>
+                <option value="60">60 月 整存整取</option>
+                <option value="360">30 年 商贷利率</option>
+            </select>
+
+ <div style="text-align:center;">  
+            <input type="submit" value="存款贷款" class="button"> </div>
+             <p style="text-align:center;"> 	<a href="https://feeday.github.io/" ><img class="img" src="https://tool.lu/netcard/" width="100%"  alt=""/></a></p>
+
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+</div>  
+
+    <script>
+      function calculateLoan(principal, annual_interest_rate, months) {
+    // 等额均还公式计算每月还款额
+    var monthly_interest_rate = annual_interest_rate / 12;
+    var monthly_payment = principal * monthly_interest_rate * (1 + monthly_interest_rate)**months / ((1 + monthly_interest_rate)**months - 1);
+
+    // 计算本息合计
+    var total_payment = monthly_payment * months;
+
+    // 计算总利息
+    var total_interest = total_payment - principal;
+
+    return { monthly_payment, total_interest, total_payment };
+}
+
+document.getElementById('loan-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // 获取用户输入
+    var amount = document.getElementById('amount').value * 10000; // 转换为元
+    var interest = document.getElementById('interest').value / 100; // 年利率
+    var months = document.getElementById('months').value; // 期限（月）
+
+    var result;
+    if (months == '360') {
+        // 使用等额均还方式计算
+        result = calculateLoan(amount, interest, parseInt(months));
+    } else {
+        // 使用单利方式计算
+        var totalInterest = (amount * interest * months) / 12;
+        var totalPayment = amount + totalInterest;
+        var monthlyPayment = totalPayment / months;
+        result = { monthly_payment: monthlyPayment, total_interest: totalInterest, total_payment: totalPayment };
+    }
+
+    if (isFinite(result.monthly_payment)) {
+        var resultElement = document.getElementById('result');
+        resultElement.innerHTML = `
+            <p>单利: ${(interest * 100).toFixed(2)}%</p>
+            <p>利息: ${result.total_interest.toFixed(2)}元</p>
+            <p>每期: ${result.monthly_payment.toFixed(2)}元</p>
+            <p>本金: ${(amount).toFixed(2)}元</p>
+            <p>总计: ${result.total_payment.toFixed(2)}元</p>
+        `;
+    } else {
+        alert('请检查你的输入！');
+    }
+});
+        document.addEventListener('DOMContentLoaded', function () {
+            var interestInput = document.getElementById('interest');
+            var monthsInput = document.getElementById('months');
+
+            // 定义利率到月份的映射
+            var rateToMonths = {
+                '0.2': '1',
+                '1.15': '3',
+                '1.35': '6',
+                '1.45': '12',
+                '1.65': '24',
+                '1.95': '36',
+                '2.0': '60',
+                '4.9': '360'
+            };
+
+            // 定义月份到利率的映射
+            var monthsToRate = {
+                '1': '0.2',
+                '3': '1.15',
+                '6': '1.35',
+                '12': '1.45',
+                '24': '1.65',
+                '36': '1 95',
+                '60': '2.0',
+                '360': '4.9'
+            };
+
+            interestInput.addEventListener('input', function () {
+                var months = rateToMonths[interestInput.value];
+                if (months) {
+                    monthsInput.value = months;
+                }
+            });
+
+            monthsInput.addEventListener('input', function () {
+                var rate = monthsToRate[monthsInput.value];
+                if (rate) {
+                    interestInput.value = rate;
+                }
+            });
+        });
+    </script>
+        <script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
+    <script>LA.init({ id: "JRHGRBPWC7lJIaXq", ck: "JRHGRBPWC7lJIaXq" })</script>
+
+    
+</body>
+</html>
