@@ -209,17 +209,9 @@ wget https://feeday.cn/sh/puck.sh --no-check-certificate # 加上 --no-check-cer
 appnode ccenter.user find all #查找用户
 appnode ccenter.user update-password 用户名 密码 #重置密码
 	
-tracert	puck.chat
+tracert	feeday.cn
 	
-netstat -an
-	
-netsh advfirewall firewall add rule name=Open Port 80 dir=in action=allow protocol=TCP localport=80   # Open Port 80 加英文双引号
-netsh advfirewall firewall add rule name=Open Port 8888 dir=in action=allow protocol=UDP localport=8888  
-netsh advfirewall firewall delete rule name=Open Port 80 
-
-netsh interface portproxy show all
-netsh interface portproxy delete v4tov4 listenaddress=192.168.1.1 listenport=7860
-netsh interface portproxy add v4tov4 listenaddress=192.168.1.1 listenport=7860 connectaddress=127.0.0.1 connectport=7860"></textarea>
+netstat -an"></textarea>
   <div class="search-container">
    <select id="searchEngine">
     <option value="https://s.weibo.com/weibo?q=">weibo.com</option>
