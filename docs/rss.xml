@@ -1,4 +1,22 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Note</title><link>https://feeday.github.io</link><description>2025-02-04</description><copyright>Note</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://feeday.github.io</link></image><lastBuildDate>Tue, 04 Feb 2025 10:58:32 +0000</lastBuildDate><managingEditor>Note</managingEditor><ttl>60</ttl><webMaster>Note</webMaster><item><title>Python_Delete_similar_images</title><link>https://feeday.github.io/post/Python_Delete_similar_images.html</link><description>### 主要功能：
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Note</title><link>https://feeday.github.io</link><description>2025-02-04</description><copyright>Note</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://github.githubassets.com/favicons/favicon.svg</url><title>avatar</title><link>https://feeday.github.io</link></image><lastBuildDate>Tue, 04 Feb 2025 11:49:31 +0000</lastBuildDate><managingEditor>Note</managingEditor><ttl>60</ttl><webMaster>Note</webMaster><item><title>Code_Find</title><link>https://feeday.github.io/post/Code_Find.html</link><description>## Window 查找
+```
+Get-ChildItem -Recurse -File | Select-String -Pattern '56'
+```
+## Bash 查找
+搜索匹配当前目录下所有文件名或文件里的内容打印显示行号
+```
+grep -rn 'Money' *
+```
+搜索多个文件并查找匹配文本在哪些文件中：
+```
+grep -l 'Money' file1 file2 file3...
+```
+查找 formatting.php 文件内 length’, 55 替换 length’, 56 :
+
+```
+sed -i s/'length', 55'/'length', 56'/g `grep 'length', 55' -rl --include='formatting.php' ./`
+```
+。</description><guid isPermaLink="true">https://feeday.github.io/post/Code_Find.html</guid><pubDate>Tue, 04 Feb 2025 11:49:10 +0000</pubDate></item><item><title>Python_Delete_similar_images</title><link>https://feeday.github.io/post/Python_Delete_similar_images.html</link><description>### 主要功能：
 
 检测和删除重复图片：通过计算图片特征向量并使用欧氏距离判断图片是否重复。</description><guid isPermaLink="true">https://feeday.github.io/post/Python_Delete_similar_images.html</guid><pubDate>Tue, 04 Feb 2025 10:58:08 +0000</pubDate></item><item><title>hi</title><link>https://feeday.github.io/post/hi.html</link><description>123。</description><guid isPermaLink="true">https://feeday.github.io/post/hi.html</guid><pubDate>Tue, 04 Feb 2025 10:42:25 +0000</pubDate></item></channel></rss>
