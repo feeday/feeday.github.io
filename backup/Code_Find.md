@@ -1,4 +1,4 @@
-## Window 查找
+## Windows 查找
 ```
 Get-ChildItem -Recurse -File | Select-String -Pattern "56"
 ```
